@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { WebSocketServer } = require("ws");
+const { Rooms } = require("../Utils/Room.js");
 const { Vector2 } = require("../Utils/Vector2.js");
 const { DataVO } = require("../VO/DataVO.js");
 
@@ -22,6 +23,7 @@ const wsServer = new WebSocketServer({ port }, () => {
 
 let handlers = [];
 let id = 0;
+let rooms = new Rooms();
 
 // imports handler
 fs.readdir(path.join(".", "Handlers"), (err, file) => {

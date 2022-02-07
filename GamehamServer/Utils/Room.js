@@ -39,7 +39,7 @@ class Room
     join(socket) {
         if (socket.id in this.players) {
             console.log("ERR Duplicate socketID");
-            return;
+            return -1;
         }
         this.players[socket.id] = socket;
         socket.room = this.roomNumber;
@@ -49,6 +49,8 @@ class Room
         if (socket.id in this.players) {
             delete this.players[socket.id];
             socket.room = -1;
+        } else {
+            return -1;
         }
     }
 
@@ -61,5 +63,5 @@ class Room
 }
 
 module.exports = {
-    Rooms: Rooms
+    Rooms: new Rooms()
 }
