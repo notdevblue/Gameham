@@ -13,8 +13,8 @@ public class XpObject : MonoBehaviour
         
         if(PlayerLevel.Instance.curXp >= PlayerLevel.Instance.LevelUpXp)
         {
-            PlayerLevel.Instance.LevelUp();
             // ·¹º§¾÷
+            PlayerLevel.Instance.LevelUp();
         }
     }
 }
