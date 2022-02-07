@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class Monster : MonoBehaviour
 {
     public float colDamage = 1f;
-    public float moveSpeed = 1f;
-    public int aggroPlayerId = -1;
+    //public float moveSpeed = 1f;
+    //public int aggroPlayerId = -1;
 
     public virtual void OnDamage()
     {
@@ -17,6 +17,6 @@ public abstract class Monster : MonoBehaviour
 
     public virtual void Move()
     {
-        // aggroPlayer 방향으로 이동하는 코드 작성
+        // 이동
     }
 }
