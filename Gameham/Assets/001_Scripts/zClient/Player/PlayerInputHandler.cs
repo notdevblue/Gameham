@@ -10,27 +10,26 @@ namespace Player.Movement
     public class PlayerInputHandler : MonoSingleton<PlayerInputHandler>
     {
         private Dictionary<KeyCode, Command> _pushInputDictionary = new Dictionary<KeyCode, Command>();
-        //private PlayerMovement _playerMove = null;
+        private PlayerMovement _playerMove = null;
 
         private void Start()
         {
-            //// �׽�Ʈ �� �ƹ����� ������ ��
             //#region
             //Cursor.visible = false;
             //Cursor.lockState = CursorLockMode.Locked;
             //#endregion
 
-            //_playerMove = FindObjectOfType<PlayerMovement>();
+            _playerMove = FindObjectOfType<PlayerMovement>();
 
-            //if (_playerMove == null)
-            //{
-            //    // Fatal
-            //}
+            if (_playerMove == null)
+            {
+                // Fatal
+            }
 
-            //_pushInputDictionary.Add(KeyCode.W, new MoveFoward(_playerMove));
-            //_pushInputDictionary.Add(KeyCode.S, new MoveBackword(_playerMove));
-            //_pushInputDictionary.Add(KeyCode.A, new MoveLeft(_playerMove));
-            //_pushInputDictionary.Add(KeyCode.D, new MoveRight(_playerMove));
+            _pushInputDictionary.Add(KeyCode.W, new MoveFoward(_playerMove));
+            _pushInputDictionary.Add(KeyCode.S, new MoveBackword(_playerMove));
+            _pushInputDictionary.Add(KeyCode.A, new MoveLeft(_playerMove));
+            _pushInputDictionary.Add(KeyCode.D, new MoveRight(_playerMove));
         }
 
         private void Update()
