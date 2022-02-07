@@ -38,5 +38,5 @@ function handleMessage(socket, message) { // handles payload to handler
         return;
     }
 
-    handlers[json.type].handle(socekt, json.payload);
+    handlers[json.type].handle(socket, json.payload);
 }
