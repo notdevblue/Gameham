@@ -12,6 +12,8 @@ namespace Player.Status
 
         // 행동 가능 상태 변수
         public bool Moveable { get; set; } = true;
+
+
     }
 
 }
