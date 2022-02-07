@@ -58,3 +58,11 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+Gameham/Logs
+Gameham/Temp
+Gameham/Library
+Gameham/UserSettings
+Gameham/Packages/packages-lock.json
+Gameham/.vscode
+Gameham/obj/Debug
+
