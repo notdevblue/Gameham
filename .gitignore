@@ -65,4 +65,4 @@ Gameham/UserSettings
 Gameham/Packages/packages-lock.json
 Gameham/.vscode
 Gameham/obj/Debug
-
+GamehamServer/node_modules
