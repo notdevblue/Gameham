@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Server.Core.VO;
+using Server.VO;
 using UnityEngine;
 
 namespace Server.Core
@@ -12,13 +12,10 @@ namespace Server.Core
 
         // private:
         private Dictionary<string, Action<string>> m_bufferDictionary;
-        private Queue<DataVO> m_packetQueue;
-
 
         public BufferHandler()
         {
             m_bufferDictionary = new Dictionary<string, Action<string>>();
-            m_packetQueue = new Queue<DataVO>();
         }
 
         ~BufferHandler()
@@ -30,13 +27,18 @@ namespace Server.Core
 
         public void Handle(string data)
         {
+            Debug.Log("Received: " + data);
+
             try {
                 DataVO vo = JsonUtility.FromJson<DataVO>(data);
                 
                 if(!m_bufferDictionary.ContainsKey(vo.type)) {
-                    Debug.LogError("BufferHandler > Handler does not exitst for request key:{vo.type}, exitting.");
+                    Debug.LogError($"BufferHandler > Handler does not exitst for request key:{vo.type}, exitting.");
                     return;
                 }
+
+                Debug.Log((vo == null) + " VO");
+                Debug.Log((m_bufferDictionary == null) + " Buffer");
 
                 m_bufferDictionary[vo.type](vo.payload);
 
@@ -45,11 +47,16 @@ namespace Server.Core
             }
         }
 
+        /// <summary>
+        /// 헨들러를 추가합니다.<br/>
+        /// ## 유니티 스레드에서 호출되지 않음 ##
+        /// </summary>
         public int Add(string type, Action<string> handledEvent, bool supressMultipleHandlerWarning = false)
         {
             bool bContains = m_bufferDictionary.ContainsKey(type);
+
             if(bContains && !supressMultipleHandlerWarning) { // 중복 헨들러 등록 체크
-                Debug.LogWarning($"BufferHandler > Handled type{type} already has its own handler, exitting.\r\n" +
+                Debug.LogWarning($"BufferHandler > Handled type:{type} already has its own handler, exitting.\r\n" +
                                   "If it's intended, set suppressMultipleHandlerWarning to true.");
                 return -1;
             }

@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
 using WebSocketSharp;
-
-using Server.Core.VO;
+using Server.VO;
 
 namespace Server.Core
 {
@@ -14,13 +13,14 @@ namespace Server.Core
 
 
         // private:
-        WebSocket m_socket;
-        const string ADDR = "localhost";
-        const ushort PORT = 32000;
+                WebSocket   m_socket;
+        const   string      ADDR = "localhost";
+        const   ushort      PORT = 48000;
+
 
         public SocketCore()
         {
-            m_socket = new WebSocket($"{ADDR}:{PORT}");
+            m_socket = new WebSocket($"ws://{ADDR}:{PORT}");
 
             m_socket.OnMessage += (s, e) => {
                 BufferHandler.Instance.Handle(e.Data);
@@ -61,7 +61,9 @@ namespace Server.Core
         public int Send(DataVO vo)
         {
             try {
-                m_socket.Send(JsonUtility.ToJson(vo));
+                string packet = JsonUtility.ToJson(vo);
+                Debug.Log("Sending: " + packet);
+                m_socket.Send(packet);
             } catch (Exception ex) {
                 Debug.LogError($"Error while sending packet to server.\r\n{ex.Message}");
                 return -1;

@@ -1,5 +1,8 @@
-namespace Server.Core.VO
+using System;
+
+namespace Server.VO
 {
+    [Serializable]
     public class DataVO
     {
         public string type;
