@@ -36,6 +36,8 @@ wsServer.on("connection", socket => {
     socket.id = id++;
     socket.server = wsServer; // 별로 좋지 못한 구현
     socket.room = null;
+    socket.onGame = false;
+
     console.log("Connected id: " + socket.id);
     socket.send(JSON.stringify(new DataVO("init", JSON.stringify({ id: socket.id }))));
 
