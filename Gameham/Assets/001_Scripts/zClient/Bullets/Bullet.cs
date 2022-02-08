@@ -1,17 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Commands;
 
-public abstract class Bullet : MonoBehaviour, IBulletObject
+namespace Player.Bullets
 {
-    public int bulletId = -1;
-    public float bulletSpeed = 0;
-    public float bulletDamage = 0;
-
-    private Vector2 bulletShotDir = Vector2.zero;
-
-    public virtual void OnDamage(Monster monster)
+    public class TestBullet : BulletCommand
     {
-        // 몬스터의 체력이 bulletDamage 만큼 감소..
+        IBullets _bullets;
+
+        public TestBullet(IBullets bullets)
+        {
+            _bullets = bullets;
+        }
+
+        public override void Delete()
+        {
+            // 총알 삭제 구문 작성
+        }
+
+        public override void Execute()
+        {
+            _bullets.Test();
+        }
     }
+
+    // 이후 무기 추가될수록 추가 작성 할거임
 }
