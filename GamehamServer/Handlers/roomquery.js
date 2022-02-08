@@ -8,9 +8,16 @@ module.exports = {
         let roomData = [];
         
         Rooms.rooms.forEach(e => {
-            roomData.push(JSON.stringify(e));
+            let data = JSON.stringify(e);
+            console.log(data);
+            roomData.push(data);
         });
 
-        broadcast(socket, JSON.stringify(new DataVO("roomquery", JSON.stringify(roomData))));
+        if (roomData.length == 0) {
+            socket.send(roomData);
+        } else {
+            socket.send(JSON.stringify(new DataVO("roomquery", JSON.stringify({roomData}))));
+        }
+
     }
 }

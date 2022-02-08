@@ -23,7 +23,10 @@ const wsServer = new WebSocketServer({ port }, () => {
 
 let handlers = [];
 let id = 0;
-let rooms = new Rooms();
+
+Rooms.createRoom();
+Rooms.createRoom();
+Rooms.createRoom();
 
 // imports handler
 fs.readdir(path.join(".", "Handlers"), (err, file) => {

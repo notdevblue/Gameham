@@ -10,13 +10,11 @@ namespace Server.Handler
     /// </summary>
     public class DataInitHandler : MonoBehaviour
     {
-        [SerializeField] private ClientBase clientBase;
-
         private void Awake()
         {
             BufferHandler.Instance.Add("init", data => {
                 InitVO vo = JsonUtility.FromJson<InitVO>(data);
-                clientBase.SetID(vo.id);
+                UserManager.Instance.Add(vo.id, new UserDataVO(vo.id));
             });
         }
     }

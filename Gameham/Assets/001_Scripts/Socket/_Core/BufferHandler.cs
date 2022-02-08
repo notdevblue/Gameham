@@ -37,9 +37,6 @@ namespace Server.Core
                     return;
                 }
 
-                Debug.Log((vo == null) + " VO");
-                Debug.Log((m_bufferDictionary == null) + " Buffer");
-
                 m_bufferDictionary[vo.type](vo.payload);
 
             } catch (Exception ex)  {
