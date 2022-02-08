@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Server.Core;
-using Server.VO;
 
 
 namespace Objects.UI

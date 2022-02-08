@@ -10,6 +10,12 @@ class Rooms
         return this.roomID++;
     }
 
+    removeRoom(roomid) {
+        if (roomid in this.rooms) {
+            delete this.rooms[roomid];
+        }
+    }
+
     joinAt(socket, roomid) {
         if (roomid in this.rooms) {
             return this.rooms[roomid].join(socket);
@@ -59,14 +65,16 @@ class Room
     leave(socket) {
         if (socket.id in this.players) {
 
+            socket.room = -1;
+
             if (this.players.length == 1) {
                 this.players = [];
+                return "-d";
             } else {
-                delete this.players[socket.id];   
+                delete this.players[socket.id];
+                return "";
             }
 
-            socket.room = -1;
-            return "";
         } else {
             return "ERR#Invalid action";
         }

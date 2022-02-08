@@ -7,12 +7,20 @@ module.exports = {
     handle(socket, payload) {
         const packet = JSON.parse(payload);
         res = Rooms.leaveAt(socket, packet.roomid);
-        if (res == "") {
-            let data = JSON.stringify(new DataVO("leaveroom", payload));
-            Rooms.rooms[packet.roomid].broadcast(data);
-            socket.send(data);
-        } else {
-            socket.send(JSON.stringify(new DataVO("error", JSON.stringify({ msg: res }))));
+        let data = JSON.stringify(new DataVO("leaveroom", payload));
+        
+        switch (res)
+        {
+            case "":
+                Rooms.rooms[packet.roomid].broadcast(data);
+            case "-d":
+                Rooms.removeRoom(packet.roomid);
+                socket.send(data);
+                break;
+            
+            default:
+                socket.send(JSON.stringify(new DataVO("error", JSON.stringify({ msg: res }))));
+                break;
         }
     }
 }

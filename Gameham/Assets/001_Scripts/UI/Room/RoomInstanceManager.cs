@@ -40,7 +40,7 @@ namespace Objects.UI
                 vo.roomData.ForEach(room => {
                     ConnectButton btn = Instantiate(_roomInstance, _instantiateParent).GetComponent<ConnectButton>();
 
-                    btn.Init(room.roomNumber, room.players, room.roomName);
+                    btn.Init(room.roomNumber, room.players, room.roomName, room.isPlaying);
                 });
             }
         }
