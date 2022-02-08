@@ -30,8 +30,8 @@ namespace Player.Level
             LevelUpXp += level;
 
             // 레벨업 작업 여기서 하기!
-            string payload = JsonUtility.ToJson(new LevelVO(me.ID, level));
-            SocketCore.Instance.Send(new DataVO("level", payload));
+            string payload = JsonUtility.ToJson(new LevelUpVO(me.ID, level));
+            SocketCore.Instance.Send(new DataVO("levelUp", payload));
         }
     }
 }

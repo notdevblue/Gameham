@@ -12,12 +12,12 @@ namespace Server.Handler
         [SerializeField] private ClientBase clientBase;
         private void Awake()
         {
-            BufferHandler.Instance.Add("level", data =>
+            BufferHandler.Instance.Add("levelUp", data =>
             {
-            // 게임 정지
+                // 게임 정지
                 GameManager.Instance.Pause();
 
-                LevelVO vo = JsonUtility.FromJson<LevelVO>(data);
+                LevelUpVO vo = JsonUtility.FromJson<LevelUpVO>(data);
 
                 // 레벨업되며 레벨업한 당사자가 선택 할 때까지 기달려야함
                 if (clientBase.ID.CompareTo(vo.id) == 0)
@@ -25,6 +25,12 @@ namespace Server.Handler
                     // 여기를 들어오면 내가 당사자라는 것이기에
                     // 선택 할 수 있는 그 뭐시기를 띄워줘야함
                 }
+            });
+
+            BufferHandler.Instance.Add("levelUpSelected", data =>
+            {
+                // 게임 정지
+                GameManager.Instance.DePause();
             });
         }
     }

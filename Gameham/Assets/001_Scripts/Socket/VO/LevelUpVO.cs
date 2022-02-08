@@ -6,12 +6,12 @@ using System;
 namespace Server.VO
 {
     [Serializable]
-    public class LevelVO
+    public class LevelUpVO
     {
         public int id;
         public int level;
 
-        public LevelVO(int id, int level)
+        public LevelUpVO(int id, int level)
         {
             this.id = id;
             this.level = level;

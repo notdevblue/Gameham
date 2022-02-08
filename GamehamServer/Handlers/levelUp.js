@@ -1,7 +1,7 @@
 const { broadcast } = require("../Utils/Broadcast")
 
 module.exports = {
-    type: "level",
+    type: "levelUp",
     handle(socket, payload) {
         broadcast(socket, payload);
     }
