@@ -11,7 +11,9 @@ class Rooms
 
     joinAt(socket, roomId) {
         if (roomId in this.rooms) {
-            this.rooms[roomId].join(socket);
+            return this.rooms[roomId].join(socket);
+        } else {
+            return "ERR#해당하는 방이 존제하지 않습니다."
         }
     }
 
@@ -38,11 +40,16 @@ class Room
 
     join(socket) {
         if (socket.id in this.players) {
-            console.log("ERR Duplicate socketID");
-            return -1;
+            console.log("ERR#Duplicate socketID.");
+            return "ERR#Duplicate socketID.";
         }
+        if (this.players.length >= 2) {
+            return "ERR#방이 가득 찼습니다."
+        }
+
         this.players[socket.id] = socket;
         socket.room = this.roomNumber;
+        return "";
     }
 
     leave(socket) {
