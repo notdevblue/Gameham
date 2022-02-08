@@ -4,7 +4,7 @@ using Server.Core;
 using Server.VO;
 
 
-namespace Server.UI
+namespace Objects.UI
 {
     public class ConnectButton : MonoBehaviour
     {
@@ -14,10 +14,10 @@ namespace Server.UI
         int _connectTo = -1;
 
 
-        public void Init(int connectTo, int userCount)
+        public void Init(int connectTo, int userCount, string name)
         {
             _connectTo = connectTo;
-            this._roomName.text = "임시 방 이름";
+            this._roomName.text = name;
             this._userCount.text = $"{userCount}/2";
 
             _btnConnect.onClick.RemoveAllListeners();

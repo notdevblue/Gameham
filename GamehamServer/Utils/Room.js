@@ -5,8 +5,9 @@ class Rooms
         this.roomID = 0;
     }
 
-    createRoom() {
-        this.rooms[this.roomID] = new Room(this.roomID++);
+    createRoom(name) {
+        this.rooms[this.roomID] = new Room(this.roomID, name);
+        return this.roomID++;
     }
 
     joinAt(socket, roomid) {
@@ -34,10 +35,11 @@ class Rooms
 
 class Room
 {
-    constructor(id) {
+    constructor(id, name) {
         this.players = [];
         this.isPlaying = false;
         this.roomNumber = id;
+        this.roomName = name;
     }
 
     join(socket) {

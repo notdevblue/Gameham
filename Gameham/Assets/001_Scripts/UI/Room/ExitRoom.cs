@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using Server.Core;
 using Server.VO;
 
-namespace Server.UI
+namespace Objects.UI
 {
     public class ExitRoom : MonoBehaviour
     {

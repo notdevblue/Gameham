@@ -24,8 +24,8 @@ const wsServer = new WebSocketServer({ port }, () => {
 let handlers = [];
 let id = 0;
 
-Rooms.createRoom();
-Rooms.createRoom();
+Rooms.createRoom("와 센즈");
+Rooms.createRoom("GGM");
 
 // imports handler
 fs.readdir(path.join(".", "Handlers"), (err, file) => {

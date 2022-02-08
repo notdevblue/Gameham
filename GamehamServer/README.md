@@ -39,9 +39,10 @@
 ```js
 {
     (List<RoomData>)roomData: {
-        (List<int>)players: 접속한 플레이어들의 ID
+        (int)players: 접속한 플레이어들의 ID
         (bool)isPlaying: 게임 시작 여부
         (int)roomNumber: 방 ID
+        (string)roomName: 방 이름
     }
 }
 // 방 리스트
@@ -66,3 +67,11 @@
 // 방 정보 불러오기 용도
 ```
 
+### createroom
+```cs
+{
+    (string)msg: 방 이름
+}
+// 방 생성 용
+// 알아서 접속됨
+```

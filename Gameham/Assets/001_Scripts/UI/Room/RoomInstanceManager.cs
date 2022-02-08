@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Server.Core;
 using Server.VO;
-using Server.UI;
 
 namespace Objects.UI
 {
@@ -41,7 +40,7 @@ namespace Objects.UI
                 vo.roomData.ForEach(room => {
                     ConnectButton btn = Instantiate(_roomInstance, _instantiateParent).GetComponent<ConnectButton>();
 
-                    btn.Init(room.roomNumber, room.players);
+                    btn.Init(room.roomNumber, room.players, room.roomName);
                 });
             }
         }

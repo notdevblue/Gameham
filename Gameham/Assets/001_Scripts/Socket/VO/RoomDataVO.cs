@@ -15,5 +15,6 @@ namespace Server.VO
         public bool isPlaying;
         public int roomNumber;
         public int players;
+        public string roomName;
     }
 }

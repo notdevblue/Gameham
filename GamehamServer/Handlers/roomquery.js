@@ -12,7 +12,8 @@ module.exports = {
             let data = {
                 isPlaying: e.isPlaying,
                 roomNumber: e.roomNumber,
-                players: e.players.length
+                players: e.players.length,
+                roomName: e.roomName
             };
             
             roomData.push(data);
