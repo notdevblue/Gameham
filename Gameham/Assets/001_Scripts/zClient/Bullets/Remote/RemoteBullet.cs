@@ -11,6 +11,7 @@ namespace Player.Bullets
     public enum BulletType
     {
         Test = -1,
+        Arrow = 1,
         // 이후 무기가 추가될수록 작성될거임
     }
 }
@@ -21,11 +22,6 @@ namespace Player.Bullets.Remote
     {
         [SerializeField] ClientBase _clientBase;
 
-        private void Awake()
-        {
-            
-        }
-
         void Send(Vector2 dir, float bulletSpeed, int damage, BulletType bulletType, int ownerId)
         {
             string payload = JsonUtility.ToJson(new BulletFireVO(dir, bulletSpeed, damage, bulletType, ownerId));
@@ -35,6 +31,11 @@ namespace Player.Bullets.Remote
         public void Test()
         {
             // Test 용 무기 발사 구문 작성
+        }
+
+        public void Arrow()
+        {
+            // Send(dir, bulletSpeed, damage, BulletType.Arrow, _clientBase.ID);
         }
     }
 

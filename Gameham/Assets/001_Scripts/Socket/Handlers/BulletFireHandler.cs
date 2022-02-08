@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Server.Core;
 using Server.VO;
+using Server.Client.Core;
 using Commands;
 using Player.Bullets;
 using Player.Bullets.Remote;
@@ -14,6 +15,12 @@ namespace Server.Handler
         private Dictionary<BulletType, BulletCommand> _bulletDictionary = new Dictionary<BulletType, BulletCommand>();
         private RemoteBullet _remoteBullet;
 
+        [SerializeField] private ClientBase _clientbase;
+
+        [SerializeField] private Transform bulletParent;
+        [Header("탄알들 프리팹")]
+        [SerializeField] private GameObject arrowPrefab;
+
         private void Awake()
         {
             _remoteBullet = FindObjectOfType<RemoteBullet>();
@@ -24,18 +31,25 @@ namespace Server.Handler
             }
 
             _bulletDictionary.Add(BulletType.Test, new TestBullet(_remoteBullet));
+            _bulletDictionary.Add(BulletType.Arrow, new ArrowBullet(_remoteBullet, arrowPrefab, bulletParent));
 
-            Handlers();
+            Handler();
         }
 
-        private void Handlers()
+        private void Handler()
         {
             BufferHandler.Instance.Add("bulletFire", data =>
             {
-                // 방향과 데미지, 탄속, 발사한 주인의 값을 받아야 함
-                // 받게 된다면 위의 값을 적용한 탄을 가져와서 발사해야함
-                // 만약 모든 플레이어가 똑같은 값을 받고 똑같은 탄을 발사하면 문제가 생기기에
-                // 총알 마다 발사한 주인을 알 수 있도록 그 값도 받도록 함
+                BulletFireVO vo = JsonUtility.FromJson<BulletFireVO>(data);
+
+                if(_clientbase.ID.CompareTo(vo.ownerId) == 0)
+                {
+                    // 컬라이더가 있는 총알 발사
+                }
+                else
+                {
+                    // 컬라이더가 없는 총알 발사
+                }
             });
         }
     }

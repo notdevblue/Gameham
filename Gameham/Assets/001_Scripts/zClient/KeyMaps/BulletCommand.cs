@@ -6,7 +6,7 @@ namespace Commands
 {
     abstract public class BulletCommand
     {
-        abstract public void Execute();
+        abstract public void Fire();
         abstract public void Delete();
     }
 }
