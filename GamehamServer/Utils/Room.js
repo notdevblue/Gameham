@@ -9,23 +9,25 @@ class Rooms
         this.rooms[this.roomID] = new Room(this.roomID++);
     }
 
-    joinAt(socket, roomId) {
-        if (roomId in this.rooms) {
-            return this.rooms[roomId].join(socket);
+    joinAt(socket, roomid) {
+        if (roomid in this.rooms) {
+            return this.rooms[roomid].join(socket);
         } else {
             return "ERR#해당하는 방이 존제하지 않습니다."
         }
     }
 
-    leaveAt(socket, roomId) {
-        if (roomId in this.rooms) {
-            this.rooms[roomId].leave(socket);
+    leaveAt(socket, roomid) {
+        if (roomid in this.rooms) {
+            return this.rooms[roomid].leave(socket);
+        } else {
+            return "ERR#Invalid action.";
         }
     }
 
-    startAt(roomId) {
-        if (roomId in this.rooms) {
-            this.rooms[roomId].start();
+    startAt(roomid) {
+        if (roomid in this.rooms) {
+            this.rooms[roomid].start();
         }
     }
 }
@@ -54,10 +56,17 @@ class Room
 
     leave(socket) {
         if (socket.id in this.players) {
-            delete this.players[socket.id];
+
+            if (this.players.length == 1) {
+                this.players = [];
+            } else {
+                delete this.players[socket.id];   
+            }
+
             socket.room = -1;
+            return "";
         } else {
-            return -1;
+            return "ERR#Invalid action";
         }
     }
 
@@ -66,6 +75,12 @@ class Room
         for (var key in this.players) {
             this.players[key].onGame = true;
         }
+    }
+
+    broadcast(data) {
+        this.players.forEach(e => {
+            e.send(data);
+        });
     }
 }
 

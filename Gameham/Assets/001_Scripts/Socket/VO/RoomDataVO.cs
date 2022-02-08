@@ -12,8 +12,8 @@ namespace Server.VO
     [Serializable]
     public class RoomDataVO
     {
-        public List<int> players;
         public bool isPlaying;
         public int roomNumber;
+        public int players;
     }
 }

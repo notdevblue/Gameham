@@ -12,17 +12,17 @@ namespace Objects.UI
         [SerializeField] private GameObject _roomInstance;
         [SerializeField] private Transform _instantiateParent;
 
-        private bool flag = false;
+        Flag room = new Flag(false);
         RoomQueryVO vo;
 
         private void Awake()
         {
             BufferHandler.Instance.Add("roomquery", data => {
+                Debug.Log(data);
                 vo = JsonUtility.FromJson<RoomQueryVO>(data);
-                Debug.Log(vo == null);
                 if(vo == null) return;
 
-                flag = true;
+                room.Set();
             });
 
             StartCoroutine(ResetRoom());
@@ -32,18 +32,17 @@ namespace Objects.UI
         {
             while (true)
             {
-                yield return new WaitUntil(() => flag);
+                yield return new WaitUntil(room.Get);
 
-                for (int i = _instantiateParent.childCount - 1; i >= 0; ++i) {
+                for (int i = _instantiateParent.childCount - 1; i >= 0; --i) {
                     Destroy(_instantiateParent.GetChild(i).gameObject);
                 }
 
                 vo.roomData.ForEach(room => {
                     ConnectButton btn = Instantiate(_roomInstance, _instantiateParent).GetComponent<ConnectButton>();
-                    btn.Init(room.roomNumber, room.players.Count);
-                });
 
-                flag = false;
+                    btn.Init(room.roomNumber, room.players);
+                });
             }
         }
     }

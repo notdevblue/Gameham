@@ -6,7 +6,8 @@ namespace Server.VO
     public class UserDataVO
     {
         public int id;
-        
+        public int roomid = -1;
+
         public UserDataVO(int id)
         {
             this.id = id;

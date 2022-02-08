@@ -26,7 +26,6 @@ let id = 0;
 
 Rooms.createRoom();
 Rooms.createRoom();
-Rooms.createRoom();
 
 // imports handler
 fs.readdir(path.join(".", "Handlers"), (err, file) => {
@@ -47,11 +46,13 @@ wsServer.on("connection", socket => {
     socket.send(JSON.stringify(new DataVO("init", JSON.stringify({ id: socket.id }))));
 
     socket.on("message", data => {
+        console.log(`ID ${socket.id}: ${data}`);
         handleMessage(socket, data);
     });
 
     socket.on("close", data => {
         console.log("Disconnected: " + socket.id);
+        Rooms.leaveAt(socket, socket.roomid);
     });
 });
 

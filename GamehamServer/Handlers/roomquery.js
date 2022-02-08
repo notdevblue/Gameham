@@ -8,15 +8,20 @@ module.exports = {
         let roomData = [];
         
         Rooms.rooms.forEach(e => {
-            let data = JSON.stringify(e);
-            console.log(data);
+
+            let data = {
+                isPlaying: e.isPlaying,
+                roomNumber: e.roomNumber,
+                players: e.players.length
+            };
+            
             roomData.push(data);
         });
 
         if (roomData.length == 0) {
             socket.send(roomData);
         } else {
-            socket.send(JSON.stringify(new DataVO("roomquery", JSON.stringify({roomData}))));
+            socket.send(JSON.stringify(new DataVO("roomquery", JSON.stringify({ roomData: roomData }))));
         }
 
     }
