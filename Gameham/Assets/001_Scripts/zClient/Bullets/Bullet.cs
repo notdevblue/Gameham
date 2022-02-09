@@ -32,12 +32,12 @@ namespace Player.Bullets
             // 총알을 쏜다고 서버에게 전달
         }
 
-        public override void RealFire()
+        public override void RealFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed)
         {
             // 총알 소환
         }
 
-        public override void EffectFire()
+        public override void EffectFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed)
         {
             // 보여주기용 총알 소환
         }
@@ -68,18 +68,23 @@ namespace Player.Bullets
         {
             _bullets.Arrow(bulletSpeed, damage);
         }
-        public override void RealFire()
+        public override void RealFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed) // 방향, 속도, 데미지
         {
             // 총알 발사하는 코드 작성함
             ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
             
             pool.gameObject.AddComponent<BoxCollider2D>();
+            pool.transform.position = firePos;
+            pool.Init(fireDir, damage, bulletSpeed);
         }
 
-        public override void EffectFire()
+        public override void EffectFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed) // 방향, 속도, 데미지
         {
             // 보여주기용 총알 발사하는 코드 작성할거임
             ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
+
+            pool.transform.position = firePos;
+            pool.Init(fireDir, damage, bulletSpeed);
         }
     }
     // 이후 무기 추가될수록 추가 작성 할거임

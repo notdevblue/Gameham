@@ -61,12 +61,12 @@ namespace Server.Handler
                 if(UserManager.Instance.GetPlayerData().id.CompareTo(vo.ownerId) == 0)
                 {
                     // 컬라이더가 있는 총알 발사
-                    _bulletDictionary[vo.bulletType].RealFire();
+                    _bulletDictionary[vo.bulletType].RealFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed);
                 }
                 else
                 {
                     // 컬라이더가 없는 총알 발사
-                    _bulletDictionary[vo.bulletType].EffectFire();
+                    _bulletDictionary[vo.bulletType].EffectFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed);
                 }
             });
         }
