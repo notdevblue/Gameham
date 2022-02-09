@@ -11,6 +11,9 @@ namespace Server.Handler
     {
         [SerializeField] private ClientBase clientBase;
 
+        [SerializeField] private Transform ownerLevelUpPanel;
+        [SerializeField] private Transform otherLevelUpPanel;
+
         private ThreadQueue threadQueue;
 
         private void Awake()
@@ -27,11 +30,16 @@ namespace Server.Handler
                     LevelUpVO vo = JsonUtility.FromJson<LevelUpVO>(data);
 
                     Debug.Log("id:" + vo.id + "가 " + vo.level + "로 레벨업함");
-                    // 레벨업되며 레벨업한 당사자가 선택 할 때까지 기달려야함
+
                     if (clientBase.ID.CompareTo(vo.id) == 0)
                     {
-                        // 여기를 들어오면 내가 당사자라는 것이기에
-                        // 선택 할 수 있는 그 뭐시기를 띄워줘야함
+                        // 여기를 들어오면 내가 당사자라는 것이기에 아이템을 선택할 수 있는 창을 띄워줌
+                        ownerLevelUpPanel.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        // 여기를 들어오면 레벨업한 당사자가 내가 아니라는 말이므로 다른걸 띄워줌
+                        otherLevelUpPanel.gameObject.SetActive(true);
                     }
                 });
             });
@@ -42,6 +50,10 @@ namespace Server.Handler
                 {
                     // 게임 정지 풀기
                     GameManager.Instance.DePause();
+
+
+                    ownerLevelUpPanel.gameObject.SetActive(false);
+                    otherLevelUpPanel.gameObject.SetActive(false);
                 });
             });
         }

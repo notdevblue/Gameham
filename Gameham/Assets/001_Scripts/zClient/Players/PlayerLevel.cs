@@ -19,7 +19,7 @@ namespace Player.Level
         public void AddXp(int xp, ClientBase me)
         {
             curXp += xp;
-            Debug.Log("지금 경험치 : " + curXp);
+            Debug.Log("지금 내 경험치 : " + curXp);
             if(curXp >= LevelUpXp)
             {
                 LevelUp(me);
