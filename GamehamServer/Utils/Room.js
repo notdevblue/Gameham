@@ -37,6 +37,15 @@ class Rooms
             this.rooms[roomid].start();
         }
     }
+
+    ready(socket, roomid) {
+        if (roomid in this.rooms) {
+            socket.ready = !socket.ready;
+            return "";
+        } else {
+            return "ERR#Invalid action.";
+        }
+    }
 }
 
 class Room

@@ -25,6 +25,7 @@ let handlers = [];
 let id = 0;
 
 Rooms.createRoom("와 센즈");
+Rooms.rooms[0].start();
 Rooms.createRoom("GGM");
 
 // imports handler
@@ -37,10 +38,12 @@ fs.readdir(path.join(".", "Handlers"), (err, file) => {
 });
 
 wsServer.on("connection", socket => {
+
     socket.id = id++;
     socket.server = wsServer; // 별로 좋지 못한 구현
     socket.room = null;
     socket.onGame = false;
+    socket.ready = false;
 
     console.log("Connected id: " + socket.id);
     socket.send(JSON.stringify(new DataVO("init", JSON.stringify({ id: socket.id }))));

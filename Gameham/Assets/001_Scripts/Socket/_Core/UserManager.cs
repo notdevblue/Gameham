@@ -16,11 +16,31 @@ namespace Server.Core
 
         public void Add(int key, UserDataVO value)
         {
+            if (m_userDictionary.ContainsKey(key)) {
+                UnityEngine.Debug.LogError("이미 등록된 ID");
+                return;
+            }
+
             m_userDictionary.Add(key, value);
         }
 
-        public void SetPlayerData(UserDataVO data)
+        public UserDataVO GetUser(int key)
         {
+            if(!m_userDictionary.ContainsKey(key)) {
+                return null;
+            } else {
+                return m_userDictionary[key];
+            }
+        }
+
+        public void SetPlayerData(int key, UserDataVO data)
+        {
+            if(m_userDictionary.ContainsKey(key)) {
+                UnityEngine.Debug.LogError("이미 등록된 ID");
+                return;
+            }
+
+            m_userDictionary.Add(key, data);
             m_playerData = data;
         }
 

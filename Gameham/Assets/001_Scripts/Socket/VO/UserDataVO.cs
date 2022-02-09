@@ -7,6 +7,7 @@ namespace Server.VO
     {
         public int id;
         public int roomid = -1;
+        public bool ready = false;
 
         public UserDataVO(int id)
         {

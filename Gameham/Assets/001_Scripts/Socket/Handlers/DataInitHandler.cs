@@ -14,7 +14,7 @@ namespace Server.Handler
         {
             BufferHandler.Instance.Add("init", data => {
                 InitVO vo = JsonUtility.FromJson<InitVO>(data);
-                UserManager.Instance.SetPlayerData(new UserDataVO(vo.id));
+                UserManager.Instance.SetPlayerData(vo.id, new UserDataVO(vo.id));
             });
         }
     }
