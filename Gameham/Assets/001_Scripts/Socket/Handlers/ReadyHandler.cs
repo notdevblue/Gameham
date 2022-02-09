@@ -16,9 +16,17 @@ namespace Server.Handler
             BufferHandler.Instance.Add("ready", data => {
                 ReadyVO vo = JsonUtility.FromJson<ReadyVO>(data);
 
-                UserManager.Instance.GetUser(vo.id).ready = vo.status;
+                UserDataVO user = UserManager.Instance.GetUser(vo.id);
+                if(user == null) {
+                    user = new UserDataVO(vo.id);
+                    UserManager.Instance.Add(vo.id, user);
+                }
 
-                _currentReadyCount += vo.status ? 1 : -1;
+                user.ready = vo.status;
+                
+                _currentReadyCount = Mathf.Clamp(_currentReadyCount + (vo.status ? 1 : -1), 0, 2);
+
+                Debug.Log(_currentReadyCount + " CNT");
 
                 readyFlag.Set();
             });

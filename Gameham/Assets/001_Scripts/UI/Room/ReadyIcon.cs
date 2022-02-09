@@ -10,9 +10,7 @@ namespace Objects.UI
 
         private void Awake()
         {
-            for (int i = 0; i < _readyIcons.Length; ++i) {
-                _readyIcons[i].SetActive(false); // 무지성 코딩
-            }
+            ReadyIcon.Instance.SetIcon(0);
         }
 
         public void SetIcon(int readyCount)
@@ -22,6 +20,7 @@ namespace Objects.UI
             }
 
             for (int i = 0; i < readyCount; ++i) {
+                Debug.Log("wa");
                 _readyIcons[i].SetActive(true);
             }
         }

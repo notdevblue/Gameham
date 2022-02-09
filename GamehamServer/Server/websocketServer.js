@@ -4,6 +4,7 @@ const { WebSocketServer } = require("ws");
 const { Rooms } = require("../Utils/Room.js");
 const { Vector2 } = require("../Utils/Vector2.js");
 const { DataVO } = require("../VO/DataVO.js");
+console.clear();
 
 //#region init
 
@@ -24,9 +25,10 @@ const wsServer = new WebSocketServer({ port }, () => {
 let handlers = [];
 let id = 0;
 
-Rooms.createRoom("와 센즈");
-Rooms.rooms[0].start();
-Rooms.createRoom("GGM");
+
+// Rooms.createRoom("와 센즈");
+// Rooms.rooms[0].start();
+// Rooms.createRoom("GGM");
 
 // imports handler
 fs.readdir(path.join(".", "Handlers"), (err, file) => {
@@ -40,7 +42,6 @@ fs.readdir(path.join(".", "Handlers"), (err, file) => {
 wsServer.on("connection", socket => {
 
     socket.id = id++;
-    socket.server = wsServer; // 별로 좋지 못한 구현
     socket.room = null;
     socket.onGame = false;
     socket.ready = false;
@@ -49,7 +50,7 @@ wsServer.on("connection", socket => {
     socket.send(JSON.stringify(new DataVO("init", JSON.stringify({ id: socket.id }))));
 
     socket.on("message", data => {
-        console.log(`ID ${socket.id}: ${data}`);
+        console.log(`\r\n# MSG OF ID ${socket.id}: ${data}\r\n`);
         handleMessage(socket, data);
     });
 

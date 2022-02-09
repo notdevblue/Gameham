@@ -36,7 +36,7 @@ namespace Server.Core
                     Debug.LogError($"BufferHandler > Handler does not exitst for request key:{vo.type}, exitting.");
                     return;
                 }
-                Debug.Log(vo.payload);
+                
                 m_bufferDictionary[vo.type](vo.payload);
 
             } catch (Exception ex)  {

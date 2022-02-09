@@ -48,8 +48,8 @@ namespace Server.Handler
             {
                 yield return new WaitUntil(join.Get);
                 _roomPannel.SetActive(false);
-                ReadyIcon.Instance.SetIcon(0);
                 _roomInsidePannel.SetActive(true);
+                ReadyIcon.Instance.SetIcon(0);
             }
         }
 

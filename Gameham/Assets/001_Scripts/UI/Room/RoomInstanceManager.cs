@@ -17,7 +17,6 @@ namespace Objects.UI
         private void Awake()
         {
             BufferHandler.Instance.Add("roomquery", data => {
-                Debug.Log(data);
                 vo = JsonUtility.FromJson<RoomQueryVO>(data);
                 if(vo == null) return;
 

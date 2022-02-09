@@ -6,7 +6,7 @@ module.exports = {
     type: "leaveroom",
     handle(socket, payload) {
         const packet = JSON.parse(payload);
-        res = Rooms.leaveAt(socket, packet.roomid);
+        res = Rooms.leaveAt(socket);
         let data = JSON.stringify(new DataVO("leaveroom", payload));
         console.log(data);
         
@@ -17,6 +17,7 @@ module.exports = {
 
                 Rooms.rooms[packet.roomid].broadcast(data);
                 Rooms.rooms[packet.roomid].broadcast(JSON.stringify(new DataVO("ready", payload)));
+                socket.send(data);
                 break;
             
             case "-d":
