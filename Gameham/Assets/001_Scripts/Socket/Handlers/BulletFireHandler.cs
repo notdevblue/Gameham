@@ -15,8 +15,7 @@ namespace Server.Handler
     {
         private Dictionary<BulletType, BulletCommand> _bulletDictionary = new Dictionary<BulletType, BulletCommand>();
         private RemoteBullet _remoteBullet;
-
-        private Queue<Action> fireQueue = new Queue<Action>(); // 유니티가 mainThread이외에는 리소스 건들지 말라해서 만든 큐
+        private ThreadQueue _thraedQueue;
 
         [SerializeField] ClientBase _clientBase;
 
@@ -27,6 +26,7 @@ namespace Server.Handler
         private void Awake()
         {
             _remoteBullet = FindObjectOfType<RemoteBullet>();
+            _thraedQueue = new ThreadQueue(this);
 
             if (_remoteBullet == null)
             {
@@ -66,7 +66,7 @@ namespace Server.Handler
                 if (_clientBase.ID.CompareTo(vo.ownerId) == 0)
                 {
                     // 컬라이더가 있는 총알 발사
-                    fireQueue.Enqueue(() =>
+                    _thraedQueue.Enqueue(() =>
                     {
                         _bulletDictionary[vo.bulletType].RealFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed, vo.bulletLifeTime);
                     });
@@ -74,20 +74,12 @@ namespace Server.Handler
                 else
                 {
                     // 컬라이더가 없는 총알 발사
-                    fireQueue.Enqueue(() =>
+                    _thraedQueue.Enqueue(() =>
                     {
                         _bulletDictionary[vo.bulletType].EffectFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed, vo.bulletLifeTime);
                     });
                 }
             });
-        }
-
-        private void Update()
-        {
-            if(fireQueue.Count != 0)
-            {
-                fireQueue.Dequeue().Invoke();
-            }
         }
     }
 
