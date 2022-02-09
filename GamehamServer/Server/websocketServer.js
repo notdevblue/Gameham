@@ -55,7 +55,7 @@ wsServer.on("connection", socket => {
 
     socket.on("close", data => {
         console.log("Disconnected: " + socket.id);
-        Rooms.leaveAt(socket, socket.roomid);
+        Rooms.leaveAt(socket, socket.room);
     });
 });
 

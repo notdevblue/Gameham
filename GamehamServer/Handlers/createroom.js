@@ -8,6 +8,12 @@ module.exports = {
         const packet = JSON.parse(payload);
         
         let roomid = Rooms.createRoom(packet.msg);
+        console.log(roomid * 2);
+        if (roomid * 2 == undefined) {
+            socket.send(JSON.stringify(new DataVO("error", JSOn.stringify({ msg: roomid }))));
+            return;
+        }
+
         let res = Rooms.joinAt(socket, roomid);
 
         if (res === "") {

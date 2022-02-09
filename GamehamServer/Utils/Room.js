@@ -6,6 +6,15 @@ class Rooms
     }
 
     createRoom(name) {
+        this.rooms.forEach(room => {
+            console.log(room.roomName);
+            console.log(name);
+            console.log();
+            if (room.roomName == name) {
+                return "ERR#이미 존재하는 방 이름입니다.";
+            }
+        });
+
         this.rooms[this.roomID] = new Room(this.roomID, name);
         return this.roomID++;
     }
@@ -26,6 +35,7 @@ class Rooms
 
     leaveAt(socket, roomid) {
         if (roomid in this.rooms) {
+            socket.ready = false;
             return this.rooms[roomid].leave(socket);
         } else {
             return "ERR#Invalid action.";
@@ -76,7 +86,7 @@ class Room
 
             socket.room = -1;
 
-            if (this.players.length == 1) {
+            if (this.players.length <= 1) {
                 this.players = [];
                 return "-d";
             } else {
