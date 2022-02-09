@@ -18,14 +18,28 @@ namespace Player.Bullets
             // 테스트용 풀 만들었던 것
         }
 
+        public override float fireDelay => -1;
+        public override float bulletSpeed => -1;
+        public override int damage => -1;
+
         public override void Delete()
         {
             // 총알 삭제 구문 작성
         }
 
-        public override void Fire()
+        public override void SendFire()
         {
-            _bullets.Test();
+            // 총알을 쏜다고 서버에게 전달
+        }
+
+        public override void RealFire()
+        {
+            // 총알 소환
+        }
+
+        public override void EffectFire()
+        {
+            // 보여주기용 총알 소환
         }
     }
 
@@ -42,14 +56,30 @@ namespace Player.Bullets
             PoolManager.CreatePool<ArrowPool>(_arrowPrefab, parent, 100);
         }
 
+        public override float fireDelay => 3;
+        public override float bulletSpeed => 2;
+        public override int damage => 10;
+
         public override void Delete()
         {
             // 총알 삭제 구문 작성
         }
-
-        public override void Fire()
+        public override void SendFire()
         {
-            _bullets.Arrow();
+            _bullets.Arrow(bulletSpeed, damage);
+        }
+        public override void RealFire()
+        {
+            // 총알 발사하는 코드 작성함
+            ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
+            
+            pool.gameObject.AddComponent<BoxCollider2D>();
+        }
+
+        public override void EffectFire()
+        {
+            // 보여주기용 총알 발사하는 코드 작성할거임
+            ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
         }
     }
     // 이후 무기 추가될수록 추가 작성 할거임

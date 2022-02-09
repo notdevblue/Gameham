@@ -20,8 +20,6 @@ namespace Player.Bullets.Remote
 {
     public class RemoteBullet : MonoBehaviour, IBullets
     {
-        [SerializeField] ClientBase _clientBase;
-
         void Send(Vector2 dir, float bulletSpeed, int damage, BulletType bulletType, int ownerId)
         {
             string payload = JsonUtility.ToJson(new BulletFireVO(dir, bulletSpeed, damage, bulletType, ownerId));
@@ -33,9 +31,9 @@ namespace Player.Bullets.Remote
             // Test 용 무기 발사 구문 작성
         }
 
-        public void Arrow()
+        public void Arrow(float bulletSpped, int damage)
         {
-            // Send(dir, bulletSpeed, damage, BulletType.Arrow, _clientBase.ID);
+            // Send(dir, bulletSpeed, damage, BulletType.Arrow, UserManager.Instance.GetPlayerData().id);
         }
     }
 
