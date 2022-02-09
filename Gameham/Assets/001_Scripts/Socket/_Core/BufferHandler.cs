@@ -31,12 +31,12 @@ namespace Server.Core
 
             try {
                 DataVO vo = JsonUtility.FromJson<DataVO>(data);
-                
-                if(!m_bufferDictionary.ContainsKey(vo.type)) {
+
+                if (!m_bufferDictionary.ContainsKey(vo.type)) {
                     Debug.LogError($"BufferHandler > Handler does not exitst for request key:{vo.type}, exitting.");
                     return;
                 }
-
+                Debug.Log(vo.payload);
                 m_bufferDictionary[vo.type](vo.payload);
 
             } catch (Exception ex)  {
@@ -61,6 +61,7 @@ namespace Server.Core
             if(bContains) {
                 m_bufferDictionary[type] += handledEvent;
             } else {
+                Debug.Log("added : " + type);
                 m_bufferDictionary.Add(type, handledEvent);
             }
 

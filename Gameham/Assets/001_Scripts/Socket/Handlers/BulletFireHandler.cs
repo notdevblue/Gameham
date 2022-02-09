@@ -7,6 +7,7 @@ using Server.Client.Core;
 using Commands;
 using Player.Bullets;
 using Player.Bullets.Remote;
+using System;
 
 namespace Server.Handler
 {
@@ -14,6 +15,10 @@ namespace Server.Handler
     {
         private Dictionary<BulletType, BulletCommand> _bulletDictionary = new Dictionary<BulletType, BulletCommand>();
         private RemoteBullet _remoteBullet;
+
+        private Queue<Action> fireQueue = new Queue<Action>(); // 유니티가 mainThread이외에는 리소스 건들지 말라해서 만든 큐
+
+        [SerializeField] ClientBase _clientBase;
 
         [SerializeField] private Transform bulletParent;
         [Header("탄알들 프리팹")]
@@ -57,18 +62,32 @@ namespace Server.Handler
             BufferHandler.Instance.Add("bulletFire", data =>
             {
                 BulletFireVO vo = JsonUtility.FromJson<BulletFireVO>(data);
-                
-                if(UserManager.Instance.GetPlayerData().id.CompareTo(vo.ownerId) == 0)
+
+                if (_clientBase.ID.CompareTo(vo.ownerId) == 0)
                 {
                     // 컬라이더가 있는 총알 발사
-                    _bulletDictionary[vo.bulletType].RealFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed);
+                    fireQueue.Enqueue(() =>
+                    {
+                        _bulletDictionary[vo.bulletType].RealFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed, vo.bulletLifeTime);
+                    });
                 }
                 else
                 {
                     // 컬라이더가 없는 총알 발사
-                    _bulletDictionary[vo.bulletType].EffectFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed);
+                    fireQueue.Enqueue(() =>
+                    {
+                        _bulletDictionary[vo.bulletType].EffectFire(vo.firePos, vo.dir, vo.damage, vo.bulletSpeed, vo.bulletLifeTime);
+                    });
                 }
             });
+        }
+
+        private void Update()
+        {
+            if(fireQueue.Count != 0)
+            {
+                fireQueue.Dequeue().Invoke();
+            }
         }
     }
 

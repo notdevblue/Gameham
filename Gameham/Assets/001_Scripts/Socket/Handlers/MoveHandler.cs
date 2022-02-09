@@ -22,7 +22,7 @@ namespace Server.Handler
             BufferHandler.Instance.Add("move", data => {
                 MoveVO vo = JsonUtility.FromJson<MoveVO>(data);
 
-                if(clientBase.ID.CompareTo(vo.id) == 0) {
+                if (clientBase.ID.CompareTo(vo.id) == 0) {
                     _targetPos = vo.pos;
                 }
             }, true);

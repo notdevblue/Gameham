@@ -13,11 +13,14 @@ namespace Player.Bullets.Pool
 
         private bool isFired = false;
 
-        public void Init(Vector2 dir, int damage, float bulletSpeed)
+        private float bulletLifeTime = 3f;
+
+        public void Init(Vector2 dir, int damage, float bulletSpeed, float bulletLifeTime)
         {
             this.dir = dir;
             this.damage = damage;
             this.bulletSpeed = bulletSpeed;
+            this.bulletLifeTime = bulletLifeTime;
 
             isFired = true;
         }
@@ -27,6 +30,13 @@ namespace Player.Bullets.Pool
             if(isFired)
             {
                 transform.position += dir * Time.deltaTime * bulletSpeed;
+                bulletLifeTime -= Time.deltaTime;
+
+                if(bulletLifeTime <= 0f)
+                {
+                    gameObject.SetActive(false);
+                    isFired = false;
+                }
             }
         }
     }

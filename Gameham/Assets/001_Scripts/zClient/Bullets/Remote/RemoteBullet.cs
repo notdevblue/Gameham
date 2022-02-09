@@ -20,11 +20,18 @@ namespace Player.Bullets.Remote
 {
     public class RemoteBullet : MonoBehaviour, IBullets
     {
-        [SerializeField] ClientBase _clientBase;
+        private ClientBase _clientBase;
+        private TestMove _testMove;
 
-        void Send(Vector2 dir, float bulletSpeed, int damage, BulletType bulletType, int ownerId)
+        private void Awake()
         {
-            string payload = JsonUtility.ToJson(new BulletFireVO(_clientBase.transform.position, dir, bulletSpeed, damage, ownerId, bulletType));
+            _clientBase = GetComponent<ClientBase>();
+            _testMove = GetComponent<TestMove>();
+        }
+
+        void Send(Vector2 dir, float bulletSpeed, float bulletLifeTime, int damage, int ownerId, BulletType bulletType)
+        {
+            string payload = JsonUtility.ToJson(new BulletFireVO(_clientBase.transform.position, dir, bulletSpeed, bulletLifeTime, damage, ownerId, bulletType));
             SocketCore.Instance.Send(new DataVO("bulletFire", payload));
         }
 
@@ -33,10 +40,10 @@ namespace Player.Bullets.Remote
             // Test 용 무기 발사 구문 작성
         }
 
-        public void Arrow(float bulletSpped, int damage)
+        public void Arrow(float bulletSpeed, float bulletLifeTime, int damage)
         {
             // 여기서 보낼때 여러 효과들을 적용 한뒤 보내주어야 함
-            // Send(dir, bulletSpeed, damage, BulletType.Arrow, _clientBase.ID);
+            Send(_testMove.moveDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, BulletType.Arrow);
         }
     }
 
