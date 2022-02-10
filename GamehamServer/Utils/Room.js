@@ -1,3 +1,6 @@
+const { createWebSocketStream } = require("ws");
+const { PrintException } = require("./PrintException");
+
 class Rooms
 {
     constructor() {
@@ -6,143 +9,127 @@ class Rooms
     }
 
     createRoom(name) {
-        this.rooms.forEach(room => {
-            // console.log(room.roomName);
-            // console.log(name);
-            // console.log();
-            if (room.roomName == name) {
-                return "ERR#이미 존재하는 방 이름입니다.";
-            }
-        });
-
-        this.rooms[this.roomID] = new Room(this.roomID, name);
-        return this.roomID++;
+        if (this.rooms.find(e => e.roomName == name) != undefined) {
+            console.log("중복 방 이름");
+        } else {
+            this.rooms[this.roomID] = new Room(this.roomID, name);
+            return this.roomID++;
+        }
     }
 
     removeRoom(roomid) {
-        if (roomid in this.rooms) {
-            // this.rooms = this.rooms.filter(x => x.roomNumber != roomid);
-            delete this.rooms[roomid];
-            this.rooms = this.rooms.filter(x => x != null);
-            console.log(`Deleting room ${roomid}`);
+        if (!(roomid in this.rooms)) {
+            PrintException("ROOM NOT FOUND", this.fetchDebugData());
+        } else {
+            this.rooms.splice(roomid, 1);
         }
     }
 
     joinAt(socket, roomid) {
-        if (roomid in this.rooms) {
-            return this.rooms[roomid].join(socket);
+        if (!(roomid in this.rooms)) {
+            console.log("해당 방 없음");
         } else {
-            return "ERR#해당하는 방이 존제하지 않습니다."
+            return this.rooms[roomid].join(socket);
         }
     }
 
     leaveAt(socket) {
-        if (socket.room in this.rooms) {
-            socket.ready = false;
-            return this.rooms[socket.room].leave(socket);
-        } else {
-            return "ERR#Socket not connected to room.";
-        }
+        leave(socket);
     }
 
     startAt(roomid) {
-        if (roomid in this.rooms) {
-            this.rooms[roomid].start();
+        if (!(roomid in this.rooms)) {
+            PrintException("ROOM NOT FOUND", this.fetchDebugData());
         }
     }
 
     ready(socket) {
-        if (socket.room in this.rooms) {
-            socket.ready = !socket.ready;
-            return "";
+        if (!(socket.room in this.rooms)) {
+            PrintException("ROOM NOT FOUND", this.fetchDebugData());
+        } else if (socket.room == -1) {
+            console.log("방에 접속중이 아님");
         } else {
-            return "ERR#Socket not connected to room.";
+            socket.ready = !socket.ready;
         }
+    }
+
+    fetchDebugData() { // 모든 방 ID 와 이름
+        let debugDataArray = [];
+        let index = 0;
+
+        this.players.forEach(e => {
+            debugDataArray[index++] = `ROOM NAME:${e.roomName}`;
+            debugDataArray[index++] = `ROOM ID:  ${e.roomNumber}`;
+        });
+
+        return debugDataArray;
     }
 }
 
 class Room
 {
     constructor(id, name) {
-        this.players = [];
-        this.isPlaying = false;
         this.roomNumber = id;
         this.roomName = name;
+        this.isPlaying = false;
+        this.players = [];
     }
 
     join(socket) {
-        if (socket.id in this.players) {
-            console.log(`\r\nERR#Duplicate socketID. id:${socket.id}\r\n`);
 
-            console.log(`---- ROOM ID ${this.roomNumber} USER DATA ----`);
-            this.players.forEach(e => {
-                console.log(`SOCKET ID ${e.id}`);
-                console.log(`SOCKET ROOMID ${e.room}\r\n`);
-            });
-
-            return `ERR#Duplicate socketID. id:${socket.id}`;
+        if (socket.id in this.players) { // 소켓 중복
+            PrintException("DUPLICATE SOCKET", this.fetchDebugData(socket.id));
+        } else {
+            this.players[socket.id] = socket;
         }
-        if (this.players.length >= 2) {
-            console.log(`\r\nERR#방이 가득 찼습니다. ${this.roomNumber}\r\n`);
-            return "ERR#방이 가득 찼습니다."
-        }
-
-        this.players[socket.id] = socket;
-        socket.room = this.roomNumber;
-        
-        console.log(`   id:${socket.id} connected to room${this.roomNumber}`);
-
-        return "";
     }
 
     leave(socket) {
-        this.players.forEach(e => {
-            console.log(`\r\ROOM ${this.roomNumber} CONNECTED SOCKET ID: ${e.id}`);
-        });
-
-        console.log("RESULT OF this.players[socket.id]: " + JSON.stringify(this.players[socket.id]));
-
-        if (socket.id in this.players) {
-
-            socket.room = -1;
-
-            console.log(`id:${socket.id} left ${this.roomNumber}`);
-
-            if (this.players.length < 1) {
-                return "-d";
-            } else {
-                // this.players = this.players.filter(x => x.id != socket.id);
-                delete this.players[socket.id];
-                this.players = this.players.filter(x => x != null);
-                return "";
-            }
-
+        if (!(socket.id in this.players)) { // 해당 방 접속 X
+            PrintException("SOCKET NOT FOUND", this.fetchDebugData(socket.id));
         } else {
-            console.log(`\r\n\r\n--- Socket not found in this room. id:${socket.id} ---\r\n`);
-            console.log(`## ROOMDATA OF ${this.roomNumber} ##`);
-            this.players.forEach(e => {
-                console.log(`   SOCKET ID: ${e.id}`);
-                console.log(`   SOCKET ROOM ID: ${e.room}`);
-            });
-
-
-            return `ERR#Socket not found in this room. id:${socket.id}`;
+            this.players.splice(socket.id, 1);
+            socket.room = -1;
         }
     }
 
     start() {
-        this.isPlaying = true;
-        for (var key in this.players) {
-            this.players[key].onGame = true;
+        if (this.isPlaying) { // 이미 게임 진행 중
+            PrintException("ROOM ALREADY PLAYING", [this.isPlaying]);
+        } else {
+            this.players.forEach(e => {
+                e.onGame = true;
+            });
         }
     }
 
     broadcast(data) {
         this.players.forEach(e => {
-            e.send(data);
+            e.send();
         });
     }
+
+
+    fetchDebugData(socketid) { // 방에 접속된 소켓 ID
+        let debugDataArray = [];
+        let index = 3;
+
+        debugDataArray[0] = `SOCKET ID: ${id}`;
+        debugDataArray[1] = `SOCKET ID: ${id}\r\n`;
+        debugDataArray[2] = "ROOM CONTAINS:";
+
+        this.players.forEach(e => {
+            debugDataArray[index++] = `\tSOCKET ID${e.id}`;
+        });
+
+        return debugDataArray;
+    }
 }
+
+let room = new Rooms();
+room.createRoom("A");
+room.createRoom("A");
+
 
 module.exports = {
     Rooms: new Rooms()
