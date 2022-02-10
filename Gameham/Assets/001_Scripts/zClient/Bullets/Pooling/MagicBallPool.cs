@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player.Bullets.Pool
 {
-    public class ArrowPool : BulletPool
+    public class MagicBallPool : BulletPool
     {
         public override void Init(Vector2 dir, int damage, float bulletSpeed, float bulletLifeTime, int pierceCount)
         {

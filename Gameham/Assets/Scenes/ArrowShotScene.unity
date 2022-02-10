@@ -869,6 +869,8 @@ MonoBehaviour:
   bulletParent: {fileID: 646703698}
   arrowPrefab: {fileID: 341335336208187811, guid: fda5936d6873cf6428c003a28803f82a, type: 3}
   lightBombPrefab: {fileID: 1924704947730564471, guid: a04add8d1716a6e4eb29c35f72b3de6c, type: 3}
+  magicBallPrefab: {fileID: 4112717581534817738, guid: cee8201b894020645826bbe6932e24bb, type: 3}
+  landminePrefab: {fileID: 2443009947298818073, guid: 4e23db036a494b3418f188a90504cb5a, type: 3}
 --- !u!4 &1061772386
 Transform:
   m_ObjectHideFlags: 0

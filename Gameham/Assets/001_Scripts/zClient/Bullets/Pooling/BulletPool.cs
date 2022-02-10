@@ -12,15 +12,19 @@ namespace Player.Bullets.Pool
         protected float bulletSpeed;
 
         protected bool isFired = false;
+        protected bool isInfinityPierce = false;
 
         protected float bulletLifeTime = -1f;
 
-        public virtual void Init(Vector2 dir, int damage, float bulletSpeed, float bulletLifeTime)
+        protected int pierceCount;
+
+        public virtual void Init(Vector2 dir, int damage, float bulletSpeed, float bulletLifeTime, int pierceCount)
         {
             this.dir = dir;
             this.damage = damage;
             this.bulletSpeed = bulletSpeed;
             this.bulletLifeTime = bulletLifeTime;
+            this.pierceCount = pierceCount;
 
             isFired = true;
         }
@@ -34,6 +38,26 @@ namespace Player.Bullets.Pool
 
                 if (bulletLifeTime <= 0f)
                 {
+                    gameObject.SetActive(false);
+                    isFired = false;
+                }
+            }
+        }
+
+        public virtual void Pierce()
+        {
+            if(isInfinityPierce)
+            {
+                return;
+            }
+            else
+            {
+                pierceCount--;
+
+                if(pierceCount == 0)
+                {
+                    // 투사체 제거
+                    this.bulletLifeTime = 0f;
                     gameObject.SetActive(false);
                     isFired = false;
                 }

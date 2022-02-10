@@ -13,6 +13,8 @@ namespace Player.Bullets
         Test = -1,
         Arrow = 1,
         LightBomb = 2,
+        MagicBall = 3,
+        Landmine = 4,
         // 이후 무기가 추가될수록 작성될거임
     }
 }
@@ -30,12 +32,12 @@ namespace Player.Bullets.Remote
             _testMove = GetComponent<TestMove>();
         }
 
-        void Send(Vector2 dir, float bulletSpeed, float bulletLifeTime, int damage, int ownerId, BulletType bulletType)
+        void Send(Vector2 dir, float bulletSpeed, float bulletLifeTime, int damage, int ownerId, int pierceCount, BulletType bulletType)
         {
             // 활 전용 - 활이 아니면 무시하는 거
             Vector3 rightVec = bulletType == BulletType.Arrow ? Quaternion.AngleAxis(-30, Vector3.forward) * dir : Vector3.zero;
 
-            string payload = JsonUtility.ToJson(new BulletFireVO(_clientBase.transform.position + (rightVec * Random.Range(-100, 101) / 200), dir, bulletSpeed, bulletLifeTime, damage, ownerId, bulletType));
+            string payload = JsonUtility.ToJson(new BulletFireVO(_clientBase.transform.position + (rightVec * Random.Range(-100, 101) / 200), dir, bulletSpeed, bulletLifeTime, damage, ownerId, pierceCount, bulletType));
             SocketCore.Instance.Send(new DataVO("bulletFire", payload));
         }
 
@@ -43,23 +45,51 @@ namespace Player.Bullets.Remote
         {
             // Test 용 무기 발사 구문 작성
         }
+        IEnumerator DelayCo(float delay, System.Action action)
+        {
+            yield return new WaitForSeconds(delay);
+            action();
+        }
 
-        public void Arrow(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount)
+        public void Arrow(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
             for (int i = 0; i < bulletCount; i++)
             {
-                // 여기서 보낼때 여러 효과들을 적용 한뒤 보내주어야 함
-                Send(_testMove.moveDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, BulletType.Arrow);
+                StartCoroutine(DelayCo(i * 0.1f, () =>
+                {
+                    Send(_testMove.moveDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, pierceCount, BulletType.Arrow);
+                }));
             }
         }
 
-        public void LightBomb(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount)
+        public void LightBomb(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
             for(int i = 0; i < bulletCount; i++)
             {
                 Vector2 randDir = new Vector2(Random.Range(-100, 101), Random.Range(-100, 101)).normalized;
 
-                Send(randDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, BulletType.LightBomb);
+                Send(randDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, pierceCount, BulletType.LightBomb);
+            }
+        }
+
+        public void MagicBall(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
+        {
+            for(int i = 0; i < bulletCount; i++)
+            {
+                Vector2 randDir = new Vector2(Random.Range(-100, 101), Random.Range(-100, 101)).normalized;
+
+                Send(randDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, pierceCount, BulletType.MagicBall);
+            }
+        }
+
+        public void Landmine(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
+        {
+            for (int i = 0; i < bulletCount; i++)
+            {
+                StartCoroutine(DelayCo(i * 0.15f, () =>
+                {
+                    Send(Vector2.zero, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, pierceCount, BulletType.Landmine);
+                }));
             }
         }
     }

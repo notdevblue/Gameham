@@ -15,9 +15,10 @@ namespace Server.VO
         public float bulletLifeTime;
         public int damage;
         public int ownerId;
+        public int pierceCount;
         public BulletType bulletType;
 
-        public BulletFireVO(Vector2 firePos, Vector2 dir, float bulletSpeed, float bulletLifeTime, int damage, int ownerId, BulletType bulletType)
+        public BulletFireVO(Vector2 firePos, Vector2 dir, float bulletSpeed, float bulletLifeTime, int damage, int ownerId, int pierceCount, BulletType bulletType)
         {
             this.firePos = firePos;
             this.dir = dir;
@@ -25,6 +26,7 @@ namespace Server.VO
             this.bulletLifeTime = bulletLifeTime;
             this.damage = damage;
             this.ownerId = ownerId;
+            this.pierceCount = pierceCount;
             this.bulletType = bulletType;
         }
     }
