@@ -5,6 +5,8 @@ using Server.Client.Core;
 using Server.Core;
 using Server.VO;
 using Player.Bullets;
+using Player.Passive.Passives;
+using Player.Passive;
 
 namespace Player.Bullets
 {
@@ -37,7 +39,15 @@ namespace Player.Bullets.Remote
             // 활 전용 - 활이 아니면 무시하는 거
             Vector3 rightVec = bulletType == BulletType.Arrow ? Quaternion.AngleAxis(-30, Vector3.forward) * dir : Vector3.zero;
 
-            string payload = JsonUtility.ToJson(new BulletFireVO(_clientBase.transform.position + (rightVec * Random.Range(-100, 101) / 200), dir, bulletSpeed, bulletLifeTime, damage, ownerId, pierceCount, bulletType));
+            string payload = JsonUtility.ToJson(new BulletFireVO(
+                _clientBase.transform.position + (rightVec * Random.Range(-100, 101) / 200), 
+                dir, 
+                bulletSpeed + (bulletSpeed * (Passives.Instance.GetValue(PassiveType.BulletSpeed) / 100)),
+                bulletLifeTime + (bulletLifeTime * (Passives.Instance.GetValue(PassiveType.LifeTime) / 100)),
+                damage + (damage * (Passives.Instance.GetValue(PassiveType.Damage) / 100)), 
+                ownerId, 
+                pierceCount, 
+                bulletType));
             SocketCore.Instance.Send(new DataVO("bulletFire", payload));
         }
 
@@ -53,6 +63,8 @@ namespace Player.Bullets.Remote
 
         public void Arrow(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
+            bulletCount += Passives.Instance.GetValue(PassiveType.BulletCount);
+
             for (int i = 0; i < bulletCount; i++)
             {
                 StartCoroutine(DelayCo(i * 0.1f, () =>
@@ -64,7 +76,9 @@ namespace Player.Bullets.Remote
 
         public void LightBomb(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
-            for(int i = 0; i < bulletCount; i++)
+            bulletCount += Passives.Instance.GetValue(PassiveType.BulletCount);
+
+            for (int i = 0; i < bulletCount; i++)
             {
                 Vector2 randDir = new Vector2(Random.Range(-100, 101), Random.Range(-100, 101)).normalized;
 
@@ -74,7 +88,9 @@ namespace Player.Bullets.Remote
 
         public void MagicBall(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
-            for(int i = 0; i < bulletCount; i++)
+            bulletCount += Passives.Instance.GetValue(PassiveType.BulletCount);
+
+            for (int i = 0; i < bulletCount; i++)
             {
                 Vector2 randDir = new Vector2(Random.Range(-100, 101), Random.Range(-100, 101)).normalized;
 
@@ -84,6 +100,8 @@ namespace Player.Bullets.Remote
 
         public void Landmine(float bulletSpeed, float bulletLifeTime, int damage, int bulletCount, int pierceCount)
         {
+            bulletCount += Passives.Instance.GetValue(PassiveType.BulletCount);
+
             for (int i = 0; i < bulletCount; i++)
             {
                 StartCoroutine(DelayCo(i * 0.15f, () =>

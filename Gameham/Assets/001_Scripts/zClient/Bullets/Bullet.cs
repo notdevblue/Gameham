@@ -61,9 +61,9 @@ namespace Player.Bullets
             _arrowPrefab = arrowPrefab;
           
             PoolManager.CreatePool<ArrowPool>(_arrowPrefab, parent, 100);
-            level = 1;
+            level = 8;
 
-            isHaving = false;
+            isHaving = true;
 
             fireDelays = new float[8] { 0.5f, 0.5f, 0.45f, 0.45f, 0.4f, 0.35f, 0.3f, 0.25f };
             bulletSpeeds = new float[8] { 10, 10, 10, 10, 10, 10, 10, 10 };
@@ -199,9 +199,9 @@ namespace Player.Bullets
             _magicBallPrefab = magicBallPrefab;
 
             PoolManager.CreatePool<MagicBallPool>(_magicBallPrefab, parent, 100);
-            level = 8;
+            level = 1;
 
-            isHaving = true;
+            isHaving = false;
 
             fireDelays = new float[8] { 4f, 3.9f, 3.8f, 3.7f, 3.6f, 3.5f, 3.3f, 3f };
             bulletSpeeds = new float[8] { 3, 3, 3, 3.3f, 3.3f, 3.3f, 3.3f, 3.5f };

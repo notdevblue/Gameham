@@ -8,6 +8,8 @@ using Commands;
 using Player.Bullets;
 using Player.Bullets.Remote;
 using System;
+using Player.Passive.Passives;
+using Player.Passive;
 
 namespace Server.Handler
 {
@@ -62,7 +64,9 @@ namespace Server.Handler
             while (true)
             {
                 command.SendFire();
-                yield return new WaitForSeconds(command.fireDelays[command.GetLevel()]);
+                yield return new WaitForSeconds(
+                    command.fireDelays[command.GetLevel()] - 
+                    (command.fireDelays[command.GetLevel()] * (Passives.Instance.GetValue(PassiveType.ShotCoolTime) / 100)));
             }
         }
 
