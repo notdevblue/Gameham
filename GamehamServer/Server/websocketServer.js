@@ -47,16 +47,16 @@ wsServer.on("connection", socket => {
     socket.server = wsServer;
     socket.ready = false;
 
-    console.log("Connected id: " + socket.id);
+    console.log(`USER CONNECTED: ${socket.id}`);
     socket.send(JSON.stringify(new DataVO("init", JSON.stringify({ id: socket.id }))));
 
     socket.on("message", data => {
-        console.log(`\r\n# MSG OF ID ${socket.id}: ${data}\r\n`);
+        console.log(`ID ${socket.id}: ${data}`);
         handleMessage(socket, data);
     });
 
     socket.on("close", data => {
-        console.log("Disconnected: " + socket.id);
+        console.log(`USER DISCONNECTED: ${socket.id}`);
         Rooms.leaveAt(socket, socket.room);
     });
 });
