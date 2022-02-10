@@ -12,6 +12,7 @@ namespace Player.Bullets
     {
         Test = -1,
         Arrow = 1,
+        LightBomb = 2,
         // 이후 무기가 추가될수록 작성될거임
     }
 }
@@ -44,6 +45,13 @@ namespace Player.Bullets.Remote
         {
             // 여기서 보낼때 여러 효과들을 적용 한뒤 보내주어야 함
             Send(_testMove.moveDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, BulletType.Arrow);
+        }
+
+        public void LightBomb(float bulletSpeed, float bulletLifeTime, int damage)
+        {
+            Vector2 randDir = new Vector2(Random.Range(-100, 101), Random.Range(-100, 101)).normalized;
+
+            Send(randDir, bulletSpeed, bulletLifeTime, damage, _clientBase.ID, BulletType.LightBomb);
         }
     }
 

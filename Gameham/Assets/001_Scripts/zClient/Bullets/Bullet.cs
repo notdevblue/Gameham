@@ -55,11 +55,18 @@ namespace Player.Bullets
         public override float fireDelay => 0.5f;
         public override float bulletSpeed => 10;
         public override float bulletLifeTime => 5;
-        public override int damage => 10;
+        public override int damage => 4;
 
-        public override void SendFire()
+        public override void EffectFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed, float bulletLifeTime) // 방향, 속도, 데미지
         {
-            _bullets.Arrow(bulletSpeed, bulletLifeTime, damage);
+            // 보여주기용 총알 발사하는 코드 작성할거임
+            ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
+
+            pool.GetComponent<BoxCollider2D>().enabled = false;
+
+            pool.transform.position = firePos;
+            pool.Init(fireDir, damage, bulletSpeed, bulletLifeTime);
+            pool.transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle(Vector2.right, fireDir) * (fireDir.y >= 0 ? 1 : -1));
         }
         public override void RealFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed, float bulletLifeTime) // 방향, 속도, 데미지
         {
@@ -72,16 +79,58 @@ namespace Player.Bullets
             pool.Init(fireDir, damage, bulletSpeed, bulletLifeTime);
             pool.transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle(Vector2.right, fireDir) * (fireDir.y >= 0 ? 1 : -1));
         }
-
-        public override void EffectFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed, float bulletLifeTime) // 방향, 속도, 데미지
+        public override void SendFire()
         {
-            // 보여주기용 총알 발사하는 코드 작성할거임
-            ArrowPool pool = PoolManager.GetItem<ArrowPool>(_arrowPrefab);
+            _bullets.Arrow(bulletSpeed, bulletLifeTime, damage);
+        }
+
+    }
+
+    public class LightBombBullet : BulletCommand
+    {
+        IBullets _bullets;
+        GameObject _lightBombPrefab;
+
+        public LightBombBullet(IBullets bullets, GameObject lightBombPrefab, Transform parent)
+        {
+            _bullets = bullets;
+            _lightBombPrefab = lightBombPrefab;
+
+            PoolManager.CreatePool<LightBombPool>(_lightBombPrefab, parent, 100);
+        }
+        public override float fireDelay => 3f;
+
+        public override float bulletSpeed => 1;
+
+        public override float bulletLifeTime => 4;
+
+        public override int damage => 15;
+
+        public override void EffectFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed, float bulletLifeTime)
+        {
+            // 총알 발사하는 코드 작성함
+            LightBombPool pool = PoolManager.GetItem<LightBombPool>(_lightBombPrefab);
 
             pool.GetComponent<BoxCollider2D>().enabled = false;
 
             pool.transform.position = firePos;
             pool.Init(fireDir, damage, bulletSpeed, bulletLifeTime);
+        }
+
+        public override void RealFire(Vector2 firePos, Vector2 fireDir, int damage, float bulletSpeed, float bulletLifeTime)
+        {
+            // 총알 발사하는 코드 작성함
+            LightBombPool pool = PoolManager.GetItem<LightBombPool>(_lightBombPrefab);
+
+            pool.GetComponent<BoxCollider2D>().enabled = true;
+
+            pool.transform.position = firePos;
+            pool.Init(fireDir, damage, bulletSpeed, bulletLifeTime);
+        }
+
+        public override void SendFire()
+        {
+            _bullets.LightBomb(bulletSpeed, bulletLifeTime, damage);
         }
     }
     // 이후 무기 추가될수록 추가 작성 할거임

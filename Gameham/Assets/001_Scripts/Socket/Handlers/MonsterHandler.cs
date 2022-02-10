@@ -1,5 +1,6 @@
 using Server.Core;
 using Server.VO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,24 +18,38 @@ namespace Server.Handler
 
         [SerializeField] private GameObject beetlePrefab;
 
+        private ThreadQueue _threadQueue;
+
+        private Dictionary<int, Func<Monster>> monsterIdSpawn = new Dictionary<int, Func<Monster>>();
+
         private void Awake()
         {
+            _threadQueue = new ThreadQueue(this);
+
             // 여기에서 모든 몬스터들의 풀링을 해줄거임
             PoolManager.CreatePool<Beetle>(beetlePrefab, monsterParent, 50);
 
+            monsterIdSpawn.Add(1, () => PoolManager.GetItem<Beetle>(beetlePrefab));
 
             // 게임이 시작 된 이후 실행되는 코드
             BufferHandler.Instance.Add("Monster", data =>
             {
-                MonsterVO vo = JsonUtility.FromJson<MonsterVO>(data);
+                _threadQueue.Enqueue(() =>
+                {
+                    MonsterVO vo = JsonUtility.FromJson<MonsterVO>(data);
 
-                // 받은 데이터와 똑같이 생성만 하면 됨
+                    // 받은 데이터와 똑같이 생성만 하면 됨
 
-                Beetle b = PoolManager.GetItem<Beetle>(beetlePrefab);
+                    for(int i = 0; i < vo.spawnMonsterIds.Length; i++)
+                    {
+                        Monster m = monsterIdSpawn[vo.spawnMonsterIds[i]]();
+                        // 여기서 몬스터의 위치랑 어그로 지정하기
+                    }
 
-                // 몬스터아이디와 일치하는 몬스터를 소환하고 어그로된 플레이어의 로컬좌표 + 랜덤 좌표로 이동한뒤
-                // 그 이후는 어그로 걸린 플레이어를 계속해서 따라간다.
-                // 하지만 지금은 플레이어의 정보를 얻을 수 없으니 이후에 작성
+                    // 몬스터아이디와 일치하는 몬스터를 소환하고 어그로된 플레이어의 로컬좌표 + 랜덤 좌표로 이동한뒤
+                    // 그 이후는 어그로 걸린 플레이어를 계속해서 따라간다.
+                    // 하지만 지금은 플레이어의 정보를 얻을 수 없으니 이후에 작성
+                });
             });
         }
     }

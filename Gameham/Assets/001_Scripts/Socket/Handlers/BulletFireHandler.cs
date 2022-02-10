@@ -22,6 +22,7 @@ namespace Server.Handler
         [SerializeField] private Transform bulletParent;
         [Header("탄알들 프리팹")]
         [SerializeField] private GameObject arrowPrefab;
+        [SerializeField] private GameObject lightBombPrefab;
 
         private void Awake()
         {
@@ -35,6 +36,7 @@ namespace Server.Handler
 
             _bulletDictionary.Add(BulletType.Test, new TestBullet(_remoteBullet));
             _bulletDictionary.Add(BulletType.Arrow, new ArrowBullet(_remoteBullet, arrowPrefab, bulletParent));
+            _bulletDictionary.Add(BulletType.LightBomb, new LightBombBullet(_remoteBullet, lightBombPrefab, bulletParent));
 
             StartShotBullet(); // 계속 반복해서 뭔갈 발사하는 함수
             Handler();
