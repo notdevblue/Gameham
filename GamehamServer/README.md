@@ -2,24 +2,6 @@
 
 ## 둘 다 주고받음
 
-### joinroom
-```cs
-{
-    (int)roomid: 참가하려는 방 ID
-    (int)id: 요청 보낸 플레이어 ID
-}
-// 방 참가 요청
-```
-
-### leaveroom
-```cs
-{
-    (int)roomid: 나가려는 방 ID
-    (int)id: 요청 보낸 플레이어 ID
-}
-// 방 퇴장 요청
-```
-
 ### move
 ```cs
 {
@@ -34,6 +16,21 @@
 
 ## 서버가 클라이언트로
 
+### joinroom
+```cs
+{
+    (int)id: 요청 보낸 플레이어 ID
+}
+// 방 참가 요청
+```
+
+### leaveroom
+```cs
+{
+    (int)id: 요청 보낸 플레이어 ID
+}
+// 방 퇴장 요청
+```
 
 ### roomquery
 ```js
@@ -57,15 +54,53 @@
 ```
 
 ### ready
-```cs
+```js
 {
     (int)id: 레디한 플레이어 id
     (bool)status: 레디 상태
 }
+```
+### start
+```js
+{
+}
+// 게임 시작 시
+```
+
+### error
+```js
+{
+    (string)msg: 에러 메세지
+}
+// 오류 발생 시
+```
+
+### response
+```js
+{
+}
+// 오류가 발생하지 않았고, 아무런 패킷이 필요하지 않은 답변일 시
+```
 
 * * *
 
 ## 클라이언트가 서버로
+
+### joinroom
+```cs
+{
+    (int)roomid: 참가하려는 방 ID
+}
+// 방 참가 요청
+```
+
+### leaveroom
+```cs
+{
+    (int)roomid: 나가려는 방 ID
+}
+// 방 퇴장 요청
+```
 
 ### roomquery
 ```cs
@@ -88,4 +123,17 @@
 {
 }
 // 레디 상태 변경 용
+```
+
+* * *
+
+## Socket 변수들
+```js
+socket.room: 접속 중인 방 ID, 없다면 -1
+socket.onGame: 게임 중인지
+socket.ready: 레디 상태
+socket.id: 고유 ID
+
+# deprecated
+socket.server: wsServer
 ```

@@ -1,5 +1,7 @@
 const { createWebSocketStream } = require("ws");
+const { DataVO } = require("../VO/DataVO");
 const { PrintException } = require("./PrintException");
+const { sendResponse } = require("./Response");
 
 class Rooms
 {
@@ -8,17 +10,19 @@ class Rooms
         this.roomID = 0;
     }
 
-    createRoom(name) {
-        if (this.rooms.find(e => e.roomName == name) != undefined) {
-            console.log("중복 방 이름");
+    createRoom(socket, name) {
+        if (this.rooms.find(e => e.roomName == name) != undefined) { // 방 이름 중복
+            sendResponse(socket, "이미 존재하는 방 이름입니다.");
         } else {
             this.rooms[this.roomID] = new Room(this.roomID, name);
-            return this.roomID++;
+            this.joinAt(socket, this.roomID);
+
+            ++this.roomID;
         }
     }
 
     removeRoom(roomid) {
-        if (!(roomid in this.rooms)) {
+        if (!(roomid in this.rooms)) { // 삭제하려는 방 존재 X
             PrintException("ROOM NOT FOUND", this.fetchDebugData());
         } else {
             this.rooms.splice(roomid, 1);
@@ -26,30 +30,46 @@ class Rooms
     }
 
     joinAt(socket, roomid) {
-        if (!(roomid in this.rooms)) {
-            console.log("해당 방 없음");
+        if (!(roomid in this.rooms)) { // 해당 방 존재 X
+            sendResponse(socket, "해당 방이 존재하지 않습니다.");
         } else {
-            return this.rooms[roomid].join(socket);
+            this.rooms[roomid].join(socket);
         }
     }
 
-    leaveAt(socket) {
-        leave(socket);
+    leaveAt(socket, roomid) {
+        if (!(roomid in this.rooms)) { // 해당 방 존재 X
+            sendResponse(socket, 1);
+        } else {
+            
+            if (socket.ready) { // 나기기 전 ready 는 false 로 처리해야 함
+                this.ready(socket);
+            }
+            this.rooms[roomid].leave(socket);
+
+            if (this.rooms[roomid].players.length == 0) { // 아무도 없는 방이면 삭제
+                this.removeRoom(roomid);
+            }
+        }
     }
 
     startAt(roomid) {
-        if (!(roomid in this.rooms)) {
+        if (!(roomid in this.rooms)) { // 해당 방 존재 X
             PrintException("ROOM NOT FOUND", this.fetchDebugData());
         }
     }
 
     ready(socket) {
-        if (!(socket.room in this.rooms)) {
+        if (!(socket.room in this.rooms)) { // 해당 방 존재 X (서버 에러 가능성)
+            sendResponse(socket, "해당 방을 찾을 수 없습니다.");
             PrintException("ROOM NOT FOUND", this.fetchDebugData());
         } else if (socket.room == -1) {
-            console.log("방에 접속중이 아님");
+            sendResponse(socket, "방에 접속중이 아닙니다.");
         } else {
             socket.ready = !socket.ready;
+
+            const payload = JSON.stringify({ id: socket.id, status: socket.ready });
+            this.rooms[socket.room].broadcast(JSON.stringify(new DataVO("ready", payload)));
         }
     }
 
@@ -77,19 +97,30 @@ class Room
 
     join(socket) {
 
-        if (socket.id in this.players) { // 소켓 중복
+        if (socket.id in this.players) { // 소켓 중복 (서버 에러 가능성)
+            sendResponse(socket, "이미 접속한 방입니다.");
             PrintException("DUPLICATE SOCKET", this.fetchDebugData(socket.id));
         } else {
             this.players[socket.id] = socket;
+            socket.room = this.roomNumber;
+
+            this.broadcast(JSON.stringify(new DataVO("joinroom", { id: socket.id })));
+            sendResponse(socket, 0);
         }
     }
 
     leave(socket) {
-        if (!(socket.id in this.players)) { // 해당 방 접속 X
+        if (!(socket.id in this.players)) { // 해당 방 접속 X (서버 에러 가능성)
+            sendResponse(socket, "접속하지 않은 방에서의 퇴장 요청");
             PrintException("SOCKET NOT FOUND", this.fetchDebugData(socket.id));
         } else {
             this.players.splice(socket.id, 1);
             socket.room = -1;
+
+            let payload = JSON.stringify({ id: socket.id });
+            this.broadcast(JSON.stringify(new DataVO("leaveroom", payload)));
+            
+            sendResponse(socket, 0);
         }
     }
 
@@ -97,8 +128,9 @@ class Room
         if (this.isPlaying) { // 이미 게임 진행 중
             PrintException("ROOM ALREADY PLAYING", [this.isPlaying]);
         } else {
-            this.players.forEach(e => {
+            this.players.forEach(e => { // 시작 브로드케스트 (onGame 변수 true 로 바꿔줘야 해서 이렇게 만듬)
                 e.onGame = true;
+                e.send(JSON.stringify(new DataVO("start", "")));
             });
         }
     }
