@@ -23,11 +23,6 @@ namespace Player.Bullets
         public override float bulletLifeTime => -1;
         public override int damage => -1;
 
-        public override void Delete()
-        {
-            // 총알 삭제 구문 작성
-        }
-
         public override void SendFire()
         {
             // 총알을 쏜다고 서버에게 전달
@@ -62,10 +57,6 @@ namespace Player.Bullets
         public override float bulletLifeTime => 5;
         public override int damage => 10;
 
-        public override void Delete()
-        {
-            // 총알 삭제 구문 작성
-        }
         public override void SendFire()
         {
             _bullets.Arrow(bulletSpeed, bulletLifeTime, damage);

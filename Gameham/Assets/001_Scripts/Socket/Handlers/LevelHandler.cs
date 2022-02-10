@@ -29,6 +29,7 @@ namespace Server.Handler
 
                     LevelUpVO vo = JsonUtility.FromJson<LevelUpVO>(data);
 
+                    // 지금은 왠지 모르게 id가 상대방하고 겹침 - 나중에 무조건 수정해야하는 부분
                     Debug.Log("id:" + vo.id + "가 " + vo.level + "로 레벨업함");
 
                     if (clientBase.ID.CompareTo(vo.id) == 0)
