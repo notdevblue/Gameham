@@ -44,6 +44,7 @@ wsServer.on("connection", socket => {
     socket.id = id++;
     socket.room = null;
     socket.onGame = false;
+    socket.server = wsServer;
     socket.ready = false;
 
     console.log("Connected id: " + socket.id);
