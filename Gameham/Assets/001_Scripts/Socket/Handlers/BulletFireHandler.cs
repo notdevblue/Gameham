@@ -46,7 +46,10 @@ namespace Server.Handler
         {
             foreach (BulletCommand command in _bulletDictionary.Values)
             {
-                StartCoroutine(FireCoroutine(command));
+                if(command.isHaving)
+                {
+                    StartCoroutine(FireCoroutine(command));
+                }
             }
         }
 
