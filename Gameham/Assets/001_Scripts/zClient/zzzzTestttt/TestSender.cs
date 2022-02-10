@@ -10,7 +10,7 @@ public class TestSender : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            SocketCore.Instance.Send(new DataVO("testSpawner", ""));
+            SocketCore.Instance.Send(new DataVO("MonsterSpanwer", ""));
         }
     }
 }

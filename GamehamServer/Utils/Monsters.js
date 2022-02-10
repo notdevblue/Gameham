@@ -24,12 +24,22 @@ class MonsterSpanwer
         this.addMonsterSpawnTime(4, [1, 1]);
         this.addMonsterSpawnTime(6, [2]);
         this.addMonsterSpawnTime(8, [2, 2]);
-        this.addMonsterSpawnTime(10, [3, 1]);
+        this.addMonsterSpawnTime(10, [1, 1, 1, 2, 3]);
+        this.addMonsterSpawnTime(12, [3, 1]);
+        this.addMonsterSpawnTime(14, [3, 1]);
+        this.addMonsterSpawnTime(16, [3, 1]);
+        this.addMonsterSpawnTime(18, [3, 1]);
+        this.addMonsterSpawnTime(20, [3, 1]);
+        this.addMonsterSpawnTime(22, [3, 1]);
+        this.addMonsterSpawnTime(24, [3, 1]);
+        this.addMonsterSpawnTime(26, [3, 1]);
+        this.addMonsterSpawnTime(28, [3, 1]);
+        this.addMonsterSpawnTime(30, [3, 1]);
     }
 
     addMonsterSpawnTime(minute, monsters)
     {
-        this.monsterSpawnTimes[minute] = monsters;
+        this.monsterSpawnTimes[minute * 60] = monsters;
     }
 
     randomPos()

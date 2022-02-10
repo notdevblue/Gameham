@@ -2,7 +2,7 @@ const { MonsterSpanwer } = require("../Utils/Monsters");
 const { DataVO } = require("../VO/DataVO");
 
 module.exports = {
-    type: "testSpawner",
+    type: "MonsterSpanwer",
     handle(socket, payload) {
         
         let m = new MonsterSpanwer(socket);
