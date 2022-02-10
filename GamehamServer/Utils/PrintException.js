@@ -13,8 +13,9 @@ module.exports = {
 
         console.log(result);
 
-        writeFile(`../Logs/exception_${date.toDateString()}.log`, result, err => {
+        writeFile(`../Logs/exception_${date.toDateString()}_${date.toTimeString()}.log`, result, err => {
             if (err) throw err;
         });
     }
 }
+
