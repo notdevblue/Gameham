@@ -16,7 +16,7 @@ namespace Objects.UI
 
             _btnExit.onClick.AddListener(() => {
                 string payload = JsonUtility.ToJson(new RoomVO(data.roomid, data.id));
-                SocketCore.Instance.Send(new DataVO("leaveroom", payload));
+                SocketCore.Instance.Send(new DataVO("leaveroom", payload), RequestType.ExitRoom);
             });
         }
     }

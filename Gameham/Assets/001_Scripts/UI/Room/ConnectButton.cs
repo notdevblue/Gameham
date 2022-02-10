@@ -29,7 +29,7 @@ namespace Objects.UI
 
             _btnConnect.onClick.AddListener(() => {
                 string payload = JsonUtility.ToJson(new RoomVO(_connectTo, UserManager.Instance.GetPlayerData().id));
-                SocketCore.Instance.Send(new DataVO("joinroom", payload));
+                SocketCore.Instance.Send(new DataVO("joinroom", payload), RequestType.JoinRoom);
             });
         }
 

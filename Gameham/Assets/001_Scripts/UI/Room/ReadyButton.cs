@@ -12,7 +12,7 @@ namespace Objects.UI
         private void Awake()
         {
             _btnReady.onClick.AddListener(() => {
-                SocketCore.Instance.Send(new DataVO("ready", ""));
+                SocketCore.Instance.Send(new DataVO("ready", ""), RequestType.Ready);
             });
         }
     }

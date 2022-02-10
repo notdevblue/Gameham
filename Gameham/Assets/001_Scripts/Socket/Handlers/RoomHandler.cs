@@ -17,26 +17,24 @@ namespace Server.Handler
 
         private void Awake()
         {
-            BufferHandler.Instance.Add("joinroom", data => {
+            BufferHandler.Instance.Add("response", data => {
+                if(!SocketCore.Instance.IsType(RequestType.JoinRoom)) return; // 방 참가 요청이 아님
+
                 UserDataVO playerData = UserManager.Instance.GetPlayerData();
-                RoomVO vo = JsonUtility.FromJson<RoomVO>(data);
+                RoomIDVO vo = SocketCore.Instance.GetLastRequestPayload<RoomIDVO>();
 
-                if(vo.id == playerData.id) {
-                    playerData.roomid = vo.roomid;
-                    Debug.Log("Connected to " + playerData.roomid);
-                    join.Set();
-                }
-            });
+                playerData.roomid = vo.roomid;
+                join.Set();
+            }, true);
 
-            BufferHandler.Instance.Add("leaveroom", data => {
+            BufferHandler.Instance.Add("response", data => {
+                if(!SocketCore.Instance.IsType(RequestType.JoinRoom)) return; // 방 퇴장 요청이 아님
+
                 UserDataVO playerData = UserManager.Instance.GetPlayerData();
-                RoomVO vo = JsonUtility.FromJson<RoomVO>(data);
+                playerData.roomid = -1;
 
-                if(vo.id == playerData.id) {
-                    playerData.roomid = -1;
-                    leave.Set();
-                }
-            });
+                leave.Set();
+            }, true);
 
             StartCoroutine(EnableInnerPannel());
             StartCoroutine(DisableInnerPannel());

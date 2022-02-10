@@ -15,7 +15,7 @@ namespace Objects.UI
         private void Awake() {
             _okButton.onClick.AddListener(() => {
                 string payload = JsonUtility.ToJson(new StringVO(_nameInput.text));
-                SocketCore.Instance.Send(new DataVO("createroom", payload));
+                SocketCore.Instance.Send(new DataVO("createroom", payload), RequestType.CreateRoom);
                 gameObject.SetActive(false);
             });
 

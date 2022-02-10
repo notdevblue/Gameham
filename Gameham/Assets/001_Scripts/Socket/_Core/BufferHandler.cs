@@ -27,8 +27,6 @@ namespace Server.Core
 
         public void Handle(string data)
         {
-            Debug.Log("Received: " + data);
-
             try {
                 DataVO vo = JsonUtility.FromJson<DataVO>(data);
 

@@ -10,10 +10,11 @@ namespace Server.Core
     public class SocketCore : Singleton<SocketCore>
     {
         // public:
-
+        public RequestType LastRequest { get; set; } = RequestType.Default;
+        public string LastRequestPayload { get; set; } = null;
 
         // private:
-                WebSocket   m_socket;
+        WebSocket   m_socket;
         const   string      ADDR = "localhost";
         const   ushort      PORT = 48000;
 
@@ -58,12 +59,16 @@ namespace Server.Core
         /// Convers DataVO to json and sends
         /// </summary>
         /// <param name="vo">Packet</param>
-        public int Send(DataVO vo)
+        public int Send(DataVO vo, RequestType reqType = RequestType.Default)
         {
+            LastRequest = reqType;
+
+            if(reqType != RequestType.Default) {
+                LastRequestPayload = vo.payload;
+            }
+
             try {
-                string packet = JsonUtility.ToJson(vo);
-                Debug.Log("Sending: " + packet);
-                m_socket.Send(packet);
+                m_socket.Send(JsonUtility.ToJson(vo));
             } catch (Exception ex) {
                 Debug.LogError($"Error while sending packet to server.\r\n{ex.Message}");
                 return -1;
@@ -87,7 +92,25 @@ namespace Server.Core
             return 0;
         }
 
+        /// <summary>
+        /// Gets payload of last unique flag send event;
+        /// </summary>
+        /// <typeparam name="T">VO type</typeparam>
+        /// <returns>VO of T</returns>
+        public T GetLastRequestPayload<T>()
+        {
+            return JsonUtility.FromJson<T>(LastRequestPayload);
+        }
 
+        /// <summary>
+        /// Checks if last request was handled type
+        /// </summary>
+        /// <param name="type">Request type</param>
+        /// <returns>true when handled type was last request type</returns>
+        public bool IsType(RequestType type)
+        {
+            return LastRequest == type;
+        }
     }
 
 }

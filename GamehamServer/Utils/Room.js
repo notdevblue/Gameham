@@ -56,6 +56,8 @@ class Rooms
     startAt(roomid) {
         if (!(roomid in this.rooms)) { // 해당 방 존재 X
             PrintException("ROOM NOT FOUND", this.fetchDebugData());
+        } else {
+            this.rooms[roomid].start();
         }
     }
 
@@ -69,7 +71,8 @@ class Rooms
             socket.ready = !socket.ready;
 
             const payload = JSON.stringify({ id: socket.id, status: socket.ready });
-            this.rooms[socket.room].broadcast(JSON.stringify(new DataVO("ready", payload)));
+            this.rooms[socket.room].broadcast(JSON.stringify(new DataVO("ready", payload)), socket.id);
+            sendResponse(socket, 0);
         }
     }
 
@@ -104,7 +107,7 @@ class Room
             this.players[socket.id] = socket;
             socket.room = this.roomNumber;
 
-            this.broadcast(JSON.stringify(new DataVO("joinroom", { id: socket.id })));
+            this.broadcast(JSON.stringify(new DataVO("joinroom", { id: socket.id })), socket.id);
             sendResponse(socket, 0);
         }
     }
@@ -118,7 +121,7 @@ class Room
             socket.room = -1;
 
             let payload = JSON.stringify({ id: socket.id });
-            this.broadcast(JSON.stringify(new DataVO("leaveroom", payload)));
+            this.broadcast(JSON.stringify(new DataVO("leaveroom", payload)), socket.id);
             
             sendResponse(socket, 0);
         }
@@ -135,9 +138,10 @@ class Room
         }
     }
 
-    broadcast(data) {
+    broadcast(data, excludeSocketid) {
         this.players.forEach(e => {
-            e.send();
+            if (e != excludeSocketid)
+                e.send(data);
         });
     }
 
