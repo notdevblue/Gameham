@@ -126,11 +126,6 @@ class Room
     }
 }
 
-let room = new Rooms();
-room.createRoom("A");
-room.createRoom("A");
-
-
 module.exports = {
     Rooms: new Rooms()
 }
