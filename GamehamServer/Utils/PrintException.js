@@ -1,11 +1,20 @@
+const { writeFile } = require("fs");
+
+const date = new Date();
+
 module.exports = {
     PrintException(exception, debugDataMessage) {
-        console.log(`\r\n---------- ${exception} ----------`);
-        console.log("DATA:");
+        let result = `\r\n---------- ${exception} ----------\r\nDATA:`;
+
         debugDataMessage.forEach(e => {
-            console.log(`\t${e}`);
+            result = result.concat("\r\n\t", e);
         });
-        console.log("---------- END OF EXCEPTION ----------\r\n");
-        throw null;
+        result = result.concat("\r\n", "---------- END OF EXCEPTION ----------\r\n");
+
+        console.log(result);
+
+        writeFile(`../Logs/exception_${date.toDateString()}.log`, result, err => {
+            if (err) throw err;
+        });
     }
 }
