@@ -25,8 +25,6 @@ const wsServer = new WebSocketServer({ port }, () => {
 let handlers = [];
 let id = 0;
 
-
-// Rooms.createRoom("와 센즈");
 // Rooms.rooms[0].start();
 // Rooms.createRoom("GGM");
 

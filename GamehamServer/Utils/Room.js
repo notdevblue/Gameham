@@ -3,6 +3,9 @@ const { DataVO } = require("../VO/DataVO");
 const { PrintException } = require("./PrintException");
 const { sendResponse } = require("./Response");
 
+// FIXME: (a in this.players)
+// FIXME: (a in this.rooms)
+
 class Rooms
 {
     constructor() {
