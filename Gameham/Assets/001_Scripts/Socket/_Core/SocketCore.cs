@@ -15,8 +15,9 @@ namespace Server.Core
 
         // private:
         WebSocket   m_socket;
-        const   string      ADDR = "localhost";
-        const   ushort      PORT = 48000;
+        // const   string      ADDR = "localhost";
+        const   string      ADDR = "175.196.226.231";
+        const   ushort      PORT = 46000;
 
 
         public SocketCore()

@@ -20,7 +20,9 @@ class Rooms
 
                 ++this.roomID;
             }
-        } catch {
+        } catch (ex) {
+            PrintException("ERR CREATING ROOM", this.fetchDebugData());
+            console.log(ex);
             sendResponse(socket, "방 생성 중 오류 발생");
         }
     }
@@ -43,7 +45,7 @@ class Rooms
 
     leaveAt(socket, roomid) {
         if (!(roomid in this.rooms)) { // 해당 방 존재 X
-            sendResponse(socket, 1);
+            sendResponse(socket, -1);
         } else {
             
             if (socket.ready) { // 나기기 전 ready 는 false 로 처리해야 함
@@ -80,11 +82,42 @@ class Rooms
         }
     }
 
+    filterNullData() {
+        this.rooms.forEach(room => {
+            room.players = room.players.filter(socket => socket != null);
+        });
+    }
+
+    fetchRoomData(socket) { // roomquery 용
+
+        this.filterNullData();
+        let roomData = [];
+
+        this.rooms.forEach(room => {
+            
+
+            let data = {
+                isPlaying: room.isPlaying,
+                roomNumber: room.roomNumber,
+                players: room.players.length,
+                roomName: room.roomName
+            };
+
+            roomData.push(data);
+        });
+
+        if (roomData.length == 0) {
+            socket.send(JSON.stringify(new DataVO("roomquery", "")));
+        } else {
+            socket.send(JSON.stringify(new DataVO("roomquery", JSON.stringify({ roomData: roomData }))));
+        }
+    }
+
     fetchDebugData() { // 모든 방 ID 와 이름
         let debugDataArray = [];
         let index = 0;
 
-        this.players.forEach(e => {
+        this.rooms.forEach(e => {
             debugDataArray[index++] = `ROOM NAME:${e.roomName}`;
             debugDataArray[index++] = `ROOM ID:  ${e.roomNumber}`;
         });
@@ -103,7 +136,7 @@ class Room
     }
 
     join(socket) {
-
+        console.log(this.players);
         if (socket.id in this.players) { // 소켓 중복 (서버 에러 가능성)
             sendResponse(socket, "이미 접속한 방입니다.");
             PrintException("DUPLICATE SOCKET", this.fetchDebugData(socket.id));
@@ -117,6 +150,7 @@ class Room
     }
 
     leave(socket) {
+        console.log(this.players);
         if (!(socket.id in this.players)) { // 해당 방 접속 X (서버 에러 가능성)
             sendResponse(socket, "접속하지 않은 방에서의 퇴장 요청");
             PrintException("SOCKET NOT FOUND", this.fetchDebugData(socket.id));
@@ -154,14 +188,13 @@ class Room
 
     fetchDebugData(socketid) { // 방에 접속된 소켓 ID
         let debugDataArray = [];
-        let index = 3;
+        let index = 2;
 
-        debugDataArray[0] = `SOCKET ID: ${socketid}`;
-        debugDataArray[1] = `SOCKET ID: ${socketid}\r\n`;
-        debugDataArray[2] = "ROOM CONTAINS:";
+        debugDataArray[0] = `SOCKET ID: ${socketid}\r\n`;
+        debugDataArray[1] = "ROOM CONTAINS:";
 
         this.players.forEach(e => {
-            debugDataArray[index++] = `\tSOCKET ID${e.id}`;
+            debugDataArray[index++] = `\tSOCKET ID: ${e.id}`;
         });
 
         return debugDataArray;

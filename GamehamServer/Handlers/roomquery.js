@@ -5,26 +5,6 @@ const { DataVO } = require("../VO/DataVO");
 module.exports = {
     type: "roomquery",
     handle(socket, payload) {
-        let roomData = [];
-        
-        Rooms.rooms.forEach(e => { // 방 정보를 저장함
-
-            let data = {
-                isPlaying: e.isPlaying,
-                roomNumber: e.roomNumber,
-                players: e.players.length,
-                roomName: e.roomName
-            };
-
-            roomData.push(data);
-        });
-
-        
-        if (roomData.length == 0) {
-            socket.send(JSON.stringify(new DataVO("roomquery", "")));
-        } else {
-            socket.send(JSON.stringify(new DataVO("roomquery", JSON.stringify({ roomData: roomData }))));
-        }
-
+        Rooms.fetchRoomData(socket);
     }
 }

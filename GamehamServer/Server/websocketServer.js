@@ -40,7 +40,6 @@ fs.readdir(path.join(".", "Handlers"), (err, file) => {
 });
 
 wsServer.on("connection", socket => {
-
     socket.id = id++;
     socket.room = null;
     socket.onGame = false;
@@ -63,7 +62,13 @@ wsServer.on("connection", socket => {
 
 
 function handleMessage(socket, message) { // handles payload to handler
-    const json = JSON.parse(message);
+    let json = "";
+    try {
+        json = JSON.parse(message);
+    } catch (ex) {
+        console.log(ex);
+    }
+
     if (handlers[json.type] == null) {
         console.log(`No handler found for type:${json.type}`);
         return;
