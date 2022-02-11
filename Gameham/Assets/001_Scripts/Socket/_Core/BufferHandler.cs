@@ -27,6 +27,8 @@ namespace Server.Core
 
         public void Handle(string data)
         {
+            Debug.Log($"Recv: {data}");
+
             try {
                 DataVO vo = JsonUtility.FromJson<DataVO>(data);
 
@@ -59,7 +61,6 @@ namespace Server.Core
             if(bContains) {
                 m_bufferDictionary[type] += handledEvent;
             } else {
-                Debug.Log("added : " + type);
                 m_bufferDictionary.Add(type, handledEvent);
             }
 

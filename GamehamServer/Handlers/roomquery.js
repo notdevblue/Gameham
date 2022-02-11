@@ -7,7 +7,7 @@ module.exports = {
     handle(socket, payload) {
         let roomData = [];
         
-        Rooms.rooms.forEach(e => {
+        Rooms.rooms.forEach(e => { // 방 정보를 저장함
 
             let data = {
                 isPlaying: e.isPlaying,

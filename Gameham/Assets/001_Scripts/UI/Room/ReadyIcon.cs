@@ -20,7 +20,6 @@ namespace Objects.UI
             }
 
             for (int i = 0; i < readyCount; ++i) {
-                Debug.Log("wa");
                 _readyIcons[i].SetActive(true);
             }
         }

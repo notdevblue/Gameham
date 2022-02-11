@@ -11,13 +11,17 @@ class Rooms
     }
 
     createRoom(socket, name) {
-        if (this.rooms.find(e => e.roomName == name) != undefined) { // 방 이름 중복
-            sendResponse(socket, "이미 존재하는 방 이름입니다.");
-        } else {
-            this.rooms[this.roomID] = new Room(this.roomID, name);
-            this.joinAt(socket, this.roomID);
+        try {
+            if (this.rooms.find(e => e.roomName == name) != undefined) { // 방 이름 중복
+                sendResponse(socket, "이미 존재하는 방 이름입니다.");
+            } else {
+                this.rooms[this.roomID] = new Room(this.roomID, name);
+                this.joinAt(socket, this.roomID);
 
-            ++this.roomID;
+                ++this.roomID;
+            }
+        } catch {
+            sendResponse(socket, "방 생성 중 오류 발생");
         }
     }
 
@@ -130,6 +134,8 @@ class Room
     start() {
         if (this.isPlaying) { // 이미 게임 진행 중
             PrintException("ROOM ALREADY PLAYING", [this.isPlaying]);
+        } else if (this.players.find(x => !x.ready)) { // 전원이 레디하지 않음
+            console.log("레디 안된 유저가 있음");
         } else {
             this.players.forEach(e => { // 시작 브로드케스트 (onGame 변수 true 로 바꿔줘야 해서 이렇게 만듬)
                 e.onGame = true;
@@ -140,7 +146,7 @@ class Room
 
     broadcast(data, excludeSocketid) {
         this.players.forEach(e => {
-            if (e != excludeSocketid)
+            if (e.id != excludeSocketid)
                 e.send(data);
         });
     }
@@ -150,8 +156,8 @@ class Room
         let debugDataArray = [];
         let index = 3;
 
-        debugDataArray[0] = `SOCKET ID: ${id}`;
-        debugDataArray[1] = `SOCKET ID: ${id}\r\n`;
+        debugDataArray[0] = `SOCKET ID: ${socketid}`;
+        debugDataArray[1] = `SOCKET ID: ${socketid}\r\n`;
         debugDataArray[2] = "ROOM CONTAINS:";
 
         this.players.forEach(e => {

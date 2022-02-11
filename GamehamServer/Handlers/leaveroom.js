@@ -6,6 +6,6 @@ module.exports = {
     type: "leaveroom",
     handle(socket, payload) {
         const packet = JSON.parse(payload);
-        Rooms.leaveAt(socket.room);
+        Rooms.leaveAt(socket, socket.room);
     }
 }

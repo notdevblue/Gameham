@@ -6,6 +6,6 @@ module.exports = {
     type: "joinroom",
     handle(socket, payload) {
         const roomid = JSON.parse(payload).roomid;
-        Rooms.joinAt(roomid);
+        Rooms.joinAt(socket, roomid);
     }
 }

@@ -22,7 +22,7 @@ namespace Server.Handler
                 _currentReadyCount = Mathf.Clamp(_currentReadyCount + (playerData.ready ? 1 : -1), 0, 2);
 
                 readyFlag.Set();
-            });
+            }, true);
 
             BufferHandler.Instance.Add("ready", data => {
                 ReadyVO vo = JsonUtility.FromJson<ReadyVO>(data);

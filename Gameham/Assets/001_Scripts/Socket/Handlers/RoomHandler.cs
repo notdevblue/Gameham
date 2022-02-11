@@ -18,17 +18,17 @@ namespace Server.Handler
         private void Awake()
         {
             BufferHandler.Instance.Add("response", data => {
-                if(!SocketCore.Instance.IsType(RequestType.JoinRoom)) return; // 방 참가 요청이 아님
+                if(!SocketCore.Instance.IsType(RequestType.JoinRoom) && !SocketCore.Instance.IsType(RequestType.CreateRoom)) return; // 방 참가 요청이 아님
 
                 UserDataVO playerData = UserManager.Instance.GetPlayerData();
                 RoomIDVO vo = SocketCore.Instance.GetLastRequestPayload<RoomIDVO>();
-
                 playerData.roomid = vo.roomid;
+
                 join.Set();
             }, true);
 
             BufferHandler.Instance.Add("response", data => {
-                if(!SocketCore.Instance.IsType(RequestType.JoinRoom)) return; // 방 퇴장 요청이 아님
+                if(!SocketCore.Instance.IsType(RequestType.ExitRoom)) return; // 방 퇴장 요청이 아님
 
                 UserDataVO playerData = UserManager.Instance.GetPlayerData();
                 playerData.roomid = -1;
