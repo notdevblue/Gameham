@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player.Bullets.Pool
 {
-    public class LightBombPool : BulletPool
+    public class LandminePool : BulletPool
     {
         Animator anim;
         private void Awake()
@@ -21,7 +21,6 @@ namespace Player.Bullets.Pool
 
             isFired = true;
         }
-
         protected override void Update()
         {
             base.Update();
@@ -53,5 +52,5 @@ namespace Player.Bullets.Pool
             anim.SetBool("isBoom", true);
         }
     }
-}
 
+}
